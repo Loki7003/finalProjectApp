@@ -50,7 +50,7 @@ namespace finalProjectApp.Controllers
 			else
 			{
 				connection.Open();
-				SqlCommand selectUser = new SqlCommand("SELECT UserId, UserLogin, FirstName, LastName, MailAddress FROM dbo.vw_SelectUser WHERE UserId = " + userId, connection);
+				SqlCommand selectUser = new SqlCommand("SELECT UserId, UserLogin, FirstName, LastName, MailAddress, RoleName FROM dbo.vw_SelectUser WHERE UserId = " + userId, connection);
 				UserModel user = new UserModel();
 				SqlDataReader reader = selectUser.ExecuteReader();
 				if(reader.Read())
@@ -60,8 +60,10 @@ namespace finalProjectApp.Controllers
 					user.Name = (String)reader[2];
 					user.Lastname = (String)reader[3];
 					user.Email = (String)reader[4];
+					user.Role = (String)reader[5];
 				}
 				connection.Close();
+				//If user role
                 return RedirectToAction("Index", "User", user);
             }
 		}
