@@ -56,10 +56,22 @@ namespace finalProjectApp.Controllers
 			}
 			else
 			{
-				login.Id = (Int32)authenticate.Parameters["@UserId"].Value;
-				return RedirectToAction("Index", "User", login);
-			}
-			connection.Close();
+				connection.Open();
+				SqlCommand selectUser = new SqlCommand("SELECT UserId, UserLogin, FirstName, LastName, MailAddress, RoleName FROM dbo.vw_SelectUser WHERE UserId = " + userId, connection);
+				UserModel user = new UserModel();
+				SqlDataReader reader = selectUser.ExecuteReader();
+				if(reader.Read())
+				{
+					user.Id = (Int32)reader[0];
+					user.Username = (String)reader[1];
+					user.Name = (String)reader[2];
+					user.Lastname = (String)reader[3];
+					user.Email = (String)reader[4];
+					user.Role = (String)reader[5];
+				}
+				connection.Close();
+				//If user role
+        return RedirectToAction("Index", "User", user);
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
