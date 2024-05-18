@@ -2,7 +2,7 @@
 {
 	public class UserModel
 	{
-		public int Id { get; set; }
+		public int Id { get; set; } = -1;
 		public string Username { get; set; }
 		public string Name { get; set; }
 		public string Lastname { get; set; }
