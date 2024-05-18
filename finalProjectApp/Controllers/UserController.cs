@@ -50,99 +50,76 @@ namespace finalProjectApp.Controllers
 				return RedirectToAction("Index", "Home", login);
 			}
 		}
-		public ActionResult UserAdministration(UserModel user)
+		public ActionResult UserAdministration()
 		{
+			if(HttpContext.Session.Get("User") == null)
+			{
+				LoginModel login = new LoginModel();
+				return RedirectToAction("Index", "Home", login);
+			}
+
+			var userJson = HttpContext.Session.Get("User");
+			var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
 			return View(user);
 		}
-		public ActionResult CreateUserAdministration(UserModel user)
+		public ActionResult CreateUserAdministration()
 		{
+			if (HttpContext.Session.Get("User") == null)
+			{
+				LoginModel login = new LoginModel();
+				return RedirectToAction("Index", "Home", login);
+			}
+
+			var userJson = HttpContext.Session.Get("User");
+			var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
 			return View(user);
 		}
-		public ActionResult UserReports(UserModel user)
+		public ActionResult UserReports()
 		{
+			if (HttpContext.Session.Get("User") == null)
+			{
+				LoginModel login = new LoginModel();
+				return RedirectToAction("Index", "Home", login);
+			}
+
+			var userJson = HttpContext.Session.Get("User");
+			var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
 			return View(user);
 		}
-		public ActionResult CreateUserReports(UserModel user)
+		public ActionResult CreateUserReports()
 		{
+			if (HttpContext.Session.Get("User") == null)
+			{
+				LoginModel login = new LoginModel();
+				return RedirectToAction("Index", "Home", login);
+			}
+
+			var userJson = HttpContext.Session.Get("User");
+			var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
 			return View(user);
 		}
-		public ActionResult Gate(UserModel user)
+		public ActionResult Gate()
 		{
+			if (HttpContext.Session.Get("User") == null)
+			{
+				LoginModel login = new LoginModel();
+				return RedirectToAction("Index", "Home", login);
+			}
+
+			var userJson = HttpContext.Session.Get("User");
+			var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
 			return View(user);
 		}
-		public ActionResult LogOut()
+		public IActionResult Logout()
 		{
 			LoginModel login = new LoginModel();
 			HttpContext.Session.Clear();
 			return RedirectToAction("Index", "Home", login);
-		}
-		// GET: UserController/Details/5
-		public ActionResult Details(int id)
-		{
-			return View();
-		}
-
-		// GET: UserController/Create
-		public ActionResult Create()
-		{
-			return View();
-		}
-
-		// POST: UserController/Create
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Create(IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
-
-		// GET: UserController/Edit/5
-		public ActionResult Edit(int id)
-		{
-			return View();
-		}
-
-		// POST: UserController/Edit/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Edit(int id, IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
-
-		// GET: UserController/Delete/5
-		public ActionResult Delete(int id)
-		{
-			return View();
-		}
-
-		// POST: UserController/Delete/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Delete(int id, IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
 		}
 	}
 }
