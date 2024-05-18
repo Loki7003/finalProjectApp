@@ -1,9 +1,10 @@
 ﻿@{
 	ViewData["Title"] = "Panel użytkownika";
-	if (Context.Session.GetString("UserName") == null || Context.Session.GetString("UserId") == null)
+	if (Context.Session.GetString("User") == null)
 	{
 		Context.Response.Redirect("/Home/Index");
 	}
+	var userJson = Context.Session.GetString("User");
 }
 @model UserModel
 <div>

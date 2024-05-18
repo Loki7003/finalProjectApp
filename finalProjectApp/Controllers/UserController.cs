@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
+using System.Text.Json;
 
 namespace finalProjectApp.Controllers
 {
@@ -33,8 +34,8 @@ namespace finalProjectApp.Controllers
 				connection.Close();
 				if (user.Enabled)
 				{
-					HttpContext.Session.SetString("UserName", user.Username);
-					HttpContext.Session.SetInt32("UserId", user.Id);
+					var userJson = JsonSerializer.Serialize(user);
+					HttpContext.Session.SetString("User", userJson);
 					return View(user);
 				}
 				else 
