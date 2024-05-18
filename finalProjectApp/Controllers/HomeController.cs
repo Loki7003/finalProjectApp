@@ -34,6 +34,8 @@ namespace finalProjectApp.Controllers
 
 		public ActionResult Login(string username, string userpassword)
 		{
+			
+
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();

@@ -11,32 +11,50 @@ namespace finalProjectApp.Controllers
 
 		public ActionResult Index(LoginModel login)
 		{
-			SqlConnection connection = new SqlConnection(connectionString);
-			connection.Open();
-			SqlCommand selectUser = new SqlCommand("SELECT UserId, UserLogin, FirstName, LastName, MailAddress, RoleName, PasswordExpired, PasswordChangedOn, UserEnabled FROM dbo.vw_SelectUser WHERE UserId = " + login.Id, connection);
-			UserModel user = new UserModel();
-			SqlDataReader reader = selectUser.ExecuteReader();
-			if (reader.Read())
+			if (login.Id != -1)
 			{
-				user.Id = (Int32)reader[0];
-				user.Username = (String)reader[1];
-				user.Name = (String)reader[2];
-				user.Lastname = (String)reader[3];
-				user.Email = (String)reader[4];
-				user.UserRole = (String)reader[5];
-				user.PasswordExpired = (Boolean)reader[6];
-				user.PassworedChangedOn = (DateTime)reader[7];
-				user.Enabled = (Boolean)reader[8];
+				SqlConnection connection = new SqlConnection(connectionString);
+				connection.Open();
+				SqlCommand selectUser = new SqlCommand("SELECT UserId, UserLogin, FirstName, LastName, MailAddress, RoleName, PasswordExpired, PasswordChangedOn, UserEnabled FROM dbo.vw_SelectUser WHERE UserId = " + login.Id, connection);
+				UserModel user = new UserModel();
+				SqlDataReader reader = selectUser.ExecuteReader();
+				if (reader.Read())
+				{
+					user.Id = (Int32)reader[0];
+					user.Username = (String)reader[1];
+					user.Name = (String)reader[2];
+					user.Lastname = (String)reader[3];
+					user.Email = (String)reader[4];
+					user.UserRole = (String)reader[5];
+					user.PasswordExpired = (Boolean)reader[6];
+					user.PassworedChangedOn = (DateTime)reader[7];
+					user.Enabled = (Boolean)reader[8];
+				}
+				connection.Close();
+				if (user.Enabled)
+				{
+					HttpContext.Session.SetString("UserName", user.Username);
+					HttpContext.Session.SetInt32("UserId", user.Id);
+					return View(user);
+				}
+				else 
+				{
+					login.LoginResponse = 2;
+					return RedirectToAction("Index", "Home", login);
+				}
 			}
-			connection.Close();
-			//if UserRole = user
-			if (user.Enabled) {
-				return View(user);
-			}
-			else {
-				login.LoginResponse = 2;
+			else
+			{
+				login.LoginResponse = 10;
 				return RedirectToAction("Index", "Home", login);
 			}
+		}
+
+		public ActionResult LogOut()
+		{
+			LoginModel login = new LoginModel();
+			HttpContext.Session.Clear();
+			return RedirectToAction("Index", "Home", login);
 		}
 
 		// GET: UserController/Details/5
