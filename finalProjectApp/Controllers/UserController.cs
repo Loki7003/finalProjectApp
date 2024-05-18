@@ -50,14 +50,32 @@ namespace finalProjectApp.Controllers
 				return RedirectToAction("Index", "Home", login);
 			}
 		}
-
+		public ActionResult UserAdministration(UserModel user)
+		{
+			return View(user);
+		}
+		public ActionResult CreateUserAdministration(UserModel user)
+		{
+			return View(user);
+		}
+		public ActionResult UserReports(UserModel user)
+		{
+			return View(user);
+		}
+		public ActionResult CreateUserReports(UserModel user)
+		{
+			return View(user);
+		}
+		public ActionResult Gate(UserModel user)
+		{
+			return View(user);
+		}
 		public ActionResult LogOut()
 		{
 			LoginModel login = new LoginModel();
 			HttpContext.Session.Clear();
 			return RedirectToAction("Index", "Home", login);
 		}
-
 		// GET: UserController/Details/5
 		public ActionResult Details(int id)
 		{

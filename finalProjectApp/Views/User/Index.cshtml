@@ -7,27 +7,35 @@
 	var userJson = Context.Session.GetString("User");
 }
 @model UserModel
-<div>
-	<h1>Witaj @Model.Name!</h1>
-	<div class="grid-menu">
-		<h4>
-			<ul>
-				<li>
-					<a href="#">Utwórz zgłoszenie technincze</a>
-				</li>
-				<li>
-					<a href ="#">Wyświetl twoje zgłoszenia techniczne</a>
-				</li>
-				<li>
-					<a href="#">Utwórz sprawę administracyjną</a>
-				</li>
-				<li>
-					<a href="#">Wyświetl twoje sprawy administracyjne</a>
-				</li>
-				<li>
-					<a href="#">Wygeneruj kod do bramy</a>
-				</li>
-			</ul>
-		</h4>
+<div class="upperpanel">
+	<div class="sitename">
+		<h1>Panel użytkownika</h1>
+	</div>
+	<div class="user">
+		<h1>User: @Model.Name</h1>
+	</div>
+	<div class="function">
+		<a href="" target="_blank">
+			<button class="profilebutton" type="button">Profil</button>
+		</a>
+		<a href="" target="_blank">
+			<button class="logoutbutton" type="button">Wyloguj</button>
+		</a>
+	</div>
+</div>
+
+<div class="panel">
+	<div class="menu">
+		<div class="administration">
+			<a asp-area="" asp-controller="User" asp-action="CreateUserAdministration">Utwórz sprawę administracyjną</a><br />
+			<a asp-area="" asp-controller="User" asp-action="UserAdministration">Wyświetl twoje sprawy administracyjne</a>
+		</div>
+		<div class="reports">
+			<a asp-area="" asp-controller="User" asp-action="UserReports">Utwórz zgłoszenie technincze</a><br />	
+			<a asp-area="" asp-controller="User" asp-action="CreateUserReports">Wyświetl twoje zgłoszenia techniczne</a>
+		</div>
+		<div class="gate">
+			<a asp-area="" asp-controller="User" asp-action="Gate">Wyświetl kod do bramy</a>
+		</div>
 	</div>
 </div>
