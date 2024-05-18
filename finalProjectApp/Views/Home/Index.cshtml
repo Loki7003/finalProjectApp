@@ -16,7 +16,11 @@
 	@{
 		if (Model.LoginResponse == 0)
 		{
-			<h4 class="text-danger">Login lub hasło niepoprawne!</h4>
-		}
-	}
+            <h4 class="text-danger">Login lub hasło niepoprawne!</h4>
+        }
+        else if (Model.LoginResponse == 2)
+        {
+            <h4 class="text-danger">Konto jest zablokowane!</h4>
+        }
+    }
 </div>

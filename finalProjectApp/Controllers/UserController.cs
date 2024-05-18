@@ -7,7 +7,7 @@ namespace finalProjectApp.Controllers
 {
 	public class UserController : Controller
 	{
-		private string connectionString = "Data Source=vps-64805245.vps.ovh.net;Initial Catalog=finalProjectDb;User Id=connection_operator;Password=Secret";
+		private string connectionString = "Data Source=vps-64805245.vps.ovh.net;Initial Catalog=finalProjectDb;User Id=connection_operator;Password=JsMuYtnJ6QwKqE2XXqsM";
 
 		public ActionResult Index(LoginModel login)
 		{
@@ -29,7 +29,14 @@ namespace finalProjectApp.Controllers
 				user.Enabled = (Boolean)reader[8];
 			}
 			connection.Close();
-			return View(user);
+			//if UserRole = user
+			if (user.Enabled) {
+				return View(user);
+			}
+			else {
+				login.LoginResponse = 2;
+				return RedirectToAction("Index", "Home", login);
+			}
 		}
 
 		// GET: UserController/Details/5

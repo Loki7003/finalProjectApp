@@ -41,43 +41,25 @@ namespace finalProjectApp.Controllers
 			authenticate.CommandType = CommandType.StoredProcedure;
 			authenticate.Parameters.AddWithValue("@Login", SqlDbType.NVarChar).Value = username;
 			authenticate.Parameters.AddWithValue("@Password", SqlDbType.NVarChar).Value = userpassword;
-			authenticate.Parameters.Add("@Response", SqlDbType.Int);
-			authenticate.Parameters["@Response"].Direction = ParameterDirection.Output;
+			authenticate.Parameters.Add("@ResponseValue", SqlDbType.Int);
+			authenticate.Parameters["@ResponseValue"].Direction = ParameterDirection.Output;
 			authenticate.Parameters.Add("@UserId", SqlDbType.Int);
-			authenticate.Parameters["@UserId"].Direction= ParameterDirection.Output;
+			authenticate.Parameters["@UserId"].Direction = ParameterDirection.Output;
 			authenticate.ExecuteNonQuery();
-			login.LoginResponse = (Int32)authenticate.Parameters["@Response"].Value;
-			
+			login.LoginResponse = (Int32)authenticate.Parameters["@ResponseValue"].Value;
+			login.Id = (Int32)authenticate.Parameters["@UserId"].Value;
+			connection.Close();
+
 			userpassword = null;
-			if(login.LoginResponse == 0)
+			if (login.LoginResponse == 0)
 			{
 
-				return RedirectToAction("Index", "Home",login);
+				return RedirectToAction("Index", "Home", login);
 			}
 			else
 			{
-				connection.Open();
-				SqlCommand selectUser = new SqlCommand("SELECT UserId, UserLogin, FirstName, LastName, MailAddress, RoleName FROM dbo.vw_SelectUser WHERE UserId = " + userId, connection);
-				UserModel user = new UserModel();
-				SqlDataReader reader = selectUser.ExecuteReader();
-				if(reader.Read())
-				{
-					user.Id = (Int32)reader[0];
-					user.Username = (String)reader[1];
-					user.Name = (String)reader[2];
-					user.Lastname = (String)reader[3];
-					user.Email = (String)reader[4];
-					user.Role = (String)reader[5];
-				}
-				connection.Close();
-				//If user role
-        return RedirectToAction("Index", "User", user);
-		}
-
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Error()
-		{
-			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+				return RedirectToAction("Index", "User", login);
+			}
 		}
 	}
 }
