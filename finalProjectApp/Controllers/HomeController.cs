@@ -9,17 +9,23 @@ namespace finalProjectApp.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
-		private string connectionString = "Data Source=vps-64805245.vps.ovh.net;Initial Catalog=finalProjectDb;User Id=connection_operator;Password=JsMuYtnJ6QwKqE2XXqsM";
-
 		public HomeController(ILogger<HomeController> logger)
 		{
 			_logger = logger;
 		}
 
-		public IActionResult Index()
+		public LoginModel login = new LoginModel();
+
+		public IActionResult Index(LoginModel login)
 		{
-			return View();
+			return View(login);
 		}
+
+		//[HttpPost]
+		//public ActionResult Index(LoginModel login)
+		//{
+		//	return View(login);
+		//}
 
 		public IActionResult Privacy()
 		{
@@ -28,9 +34,10 @@ namespace finalProjectApp.Controllers
 
 		public ActionResult Login(string username, string userpassword)
 		{
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            SqlCommand authenticate = new SqlCommand("dbo.sp_AuthenticateUser", connection);
+			ConnectionClass connectionClass = new ConnectionClass();
+			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+			connection.Open();
+			SqlCommand authenticate = new SqlCommand("dbo.sp_AuthenticateUser", connection);
 			authenticate.CommandType = CommandType.StoredProcedure;
 			authenticate.Parameters.AddWithValue("@Login", SqlDbType.NVarChar).Value = username;
 			authenticate.Parameters.AddWithValue("@Password", SqlDbType.NVarChar).Value = userpassword;
@@ -38,14 +45,14 @@ namespace finalProjectApp.Controllers
 			authenticate.Parameters["@Response"].Direction = ParameterDirection.Output;
 			authenticate.Parameters.Add("@UserId", SqlDbType.Int);
 			authenticate.Parameters["@UserId"].Direction= ParameterDirection.Output;
-            authenticate.ExecuteNonQuery();
-			int response = (Int32)authenticate.Parameters["@Response"].Value;
-			int userId = (Int32)authenticate.Parameters["@UserId"].Value;
-			connection.Close();
+			authenticate.ExecuteNonQuery();
+			login.LoginResponse = (Int32)authenticate.Parameters["@Response"].Value;
+			
 			userpassword = null;
-			if(response == 0)
+			if(login.LoginResponse == 0)
 			{
-				return View(Index());
+
+				return RedirectToAction("Index", "Home",login);
 			}
 			else
 			{
@@ -64,8 +71,7 @@ namespace finalProjectApp.Controllers
 				}
 				connection.Close();
 				//If user role
-                return RedirectToAction("Index", "User", user);
-            }
+        return RedirectToAction("Index", "User", user);
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
