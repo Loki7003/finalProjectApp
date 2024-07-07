@@ -8,13 +8,13 @@ namespace finalProjectApp.Controllers
 {
 	public class UserController : Controller
 	{
-		private string connectionString = "Data Source=vps-64805245.vps.ovh.net;Initial Catalog=finalProjectDb;User Id=connection_operator;Password=JsMuYtnJ6QwKqE2XXqsM";
 
 		public ActionResult Index(LoginModel login)
 		{
 			if (login.Id != -1)
 			{
-				SqlConnection connection = new SqlConnection(connectionString);
+				ConnectionClass connectionClass = new ConnectionClass();
+				SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 				connection.Open();
 				SqlCommand selectUser = new SqlCommand("SELECT UserId, UserLogin, FirstName, LastName, MailAddress, RoleName, PasswordExpired, PasswordChangedOn, UserEnabled FROM dbo.vw_SelectUser WHERE UserId = " + login.Id, connection);
 				UserModel user = new UserModel();

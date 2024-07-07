@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="finalProjectMobileApp.LoginPage"
+             Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+
+            <Label
+                Text="Technical Portal"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <StackLayout>
+
+                <Label Text="Login:" FontSize="Medium" HorizontalTextAlignment="Center"/>
+                <Frame BackgroundColor="LightGray" CornerRadius="5" BorderColor="Black" Padding="0" >
+                    <Entry Placeholder="Username" x:Name="UsernameEntry" />
+                </Frame>
+
+                <Label Text="Password:" FontSize="Medium" HorizontalTextAlignment="Center"/>
+                <Frame BackgroundColor="LightGray" CornerRadius="5" BorderColor="Black" Padding="0" >
+                    <Entry IsPassword="True" x:Name="PasswordEntry" />
+                </Frame>
+
+                <Button
+                x:Name="LoginButton"
+                Text="Login" 
+                Clicked="OnLoginClicked"
+                HorizontalOptions="Fill" 
+                Margin="20"/>
+
+            </StackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
