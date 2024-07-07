@@ -1,40 +1,23 @@
-﻿using finalProjectApp.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace finalProjectApp.Controllers
+namespace finalProjectMobileApp
 {
-	public class HomeController : Controller
-	{
-		private readonly ILogger<HomeController> _logger;
-		public HomeController(ILogger<HomeController> logger)
-		{
-			_logger = logger;
-		}
+    public partial class LoginPage : ContentPage
+    {
 
-		public LoginModel login = new LoginModel();
+		internal LoginClass login = new LoginClass();
 
-		public IActionResult Index(LoginModel login)
-		{
-			return View(login);
-		}
+        public LoginPage()
+        {
+            InitializeComponent();
+        }
 
-		//[HttpPost]
-		//public ActionResult Index(LoginModel login)
-		//{
-		//	return View(login);
-		//}
+        public void OnLoginClicked(object sender, EventArgs e)
+        {
 
-		public IActionResult Privacy()
-		{
-			return View();
-		}
-
-		public ActionResult Login(string username, string userpassword)
-		{
-			
+			string username = UsernameEntry.Text;
+			string userpassword = PasswordEntry.Text;
 
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
@@ -51,16 +34,22 @@ namespace finalProjectApp.Controllers
 			login.LoginResponse = (Int32)authenticate.Parameters["@ResponseValue"].Value;
 			connection.Close();
 
-			userpassword = null;
 			if (login.LoginResponse == 0)
 			{
-				return RedirectToAction("Index", "Home", login);
+				DisplayAlert("Invalid login", "Invalid login or password!\nPleas try again.", "OK");
 			}
 			else
 			{
 				login.Id = (Int32)authenticate.Parameters["@UserId"].Value;
-				return RedirectToAction("Index", "User", login);
+				HomePage homePage = new HomePage(login.Id);
+				Navigation.PopAsync();
+				Navigation.PushAsync(homePage);
 			}
+
+			
+
 		}
+
 	}
+
 }

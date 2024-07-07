@@ -1,4 +1,4 @@
-﻿namespace finalProjectApp
+﻿namespace finalProjectMobileApp
 {
 	public class ConnectionClass
 	{
