@@ -18,7 +18,7 @@
 
                 <Label Text="Login:" FontSize="Medium" HorizontalTextAlignment="Center"/>
                 <Frame BackgroundColor="LightGray" CornerRadius="5" BorderColor="Black" Padding="0" >
-                    <Entry Placeholder="Username" x:Name="UsernameEntry" />
+                    <Entry x:Name="UsernameEntry" />
                 </Frame>
 
                 <Label Text="Password:" FontSize="Medium" HorizontalTextAlignment="Center"/>
@@ -27,9 +27,9 @@
                 </Frame>
 
                 <Button
-                x:Name="LoginButton"
+                x:Name="loginButton"
                 Text="Login" 
-                Clicked="OnLoginClicked"
+                Clicked="LoginButton_Clicked"
                 HorizontalOptions="Fill" 
                 Margin="20"/>
 

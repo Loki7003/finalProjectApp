@@ -13,7 +13,7 @@ namespace finalProjectMobileApp
             InitializeComponent();
         }
 
-        public void OnLoginClicked(object sender, EventArgs e)
+        public void LoginButton_Clicked(object sender, EventArgs e)
         {
 
 			string username = UsernameEntry.Text;
@@ -22,14 +22,14 @@ namespace finalProjectMobileApp
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand authenticate = new SqlCommand("dbo.sp_AuthenticateUser", connection);
+			SqlCommand authenticate = new SqlCommand("dbo.sp_AuthenticateTechnician", connection);
 			authenticate.CommandType = CommandType.StoredProcedure;
 			authenticate.Parameters.AddWithValue("@Login", SqlDbType.NVarChar).Value = username;
 			authenticate.Parameters.AddWithValue("@Password", SqlDbType.NVarChar).Value = userpassword;
 			authenticate.Parameters.Add("@ResponseValue", SqlDbType.Int);
 			authenticate.Parameters["@ResponseValue"].Direction = ParameterDirection.Output;
-			authenticate.Parameters.Add("@UserId", SqlDbType.Int);
-			authenticate.Parameters["@UserId"].Direction = ParameterDirection.Output;
+			authenticate.Parameters.Add("@TechnicianId", SqlDbType.Int);
+			authenticate.Parameters["@TechnicianId"].Direction = ParameterDirection.Output;
 			authenticate.ExecuteNonQuery();
 			login.LoginResponse = (Int32)authenticate.Parameters["@ResponseValue"].Value;
 			connection.Close();
@@ -40,7 +40,7 @@ namespace finalProjectMobileApp
 			}
 			else
 			{
-				login.Id = (Int32)authenticate.Parameters["@UserId"].Value;
+				login.Id = (Int32)authenticate.Parameters["@TechnicianId"].Value;
 				HomePage homePage = new HomePage(login.Id);
 				Navigation.PopAsync();
 				Navigation.PushAsync(homePage);
