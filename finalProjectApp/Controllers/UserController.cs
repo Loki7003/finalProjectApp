@@ -34,9 +34,16 @@ namespace finalProjectApp.Controllers
 				connection.Close();
 				if (user.Enabled)
 				{
-					var userJson = JsonSerializer.Serialize(user);
-					HttpContext.Session.SetString("User", userJson);
-					return View(user);
+					if (!user.PasswordExpired)
+					{
+						var userJson = JsonSerializer.Serialize(user);
+						HttpContext.Session.SetString("User", userJson);
+						return View(user);
+					}
+					else
+					{
+                        return RedirectToAction("ChangeUserPassword", "User", user);
+					}
 				}
 				else 
 				{
@@ -120,6 +127,12 @@ namespace finalProjectApp.Controllers
 			LoginModel login = new LoginModel();
 			HttpContext.Session.Clear();
 			return RedirectToAction("Index", "Home", login);
+		}
+
+		// Dokończyć stronę zmiany hasła
+		public IActionResult ChangeUserPassword(UserModel user)
+		{
+			return View();
 		}
 	}
 }
