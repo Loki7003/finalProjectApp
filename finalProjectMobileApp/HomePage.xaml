@@ -6,7 +6,8 @@
              Shell.NavBarIsVisible="False">
     <VerticalStackLayout>
         <Label 
-            Text="{Binding Name}"
+            x:Name="welcomeLabel"
+            Text=""
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     </VerticalStackLayout>
