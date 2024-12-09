@@ -50,6 +50,8 @@ namespace finalProjectApp.Controllers
 				return RedirectToAction("Index", "Home", login);
 			}
 		}
+
+		//Sample method for later
 		public ActionResult UserAdministration()
 		{
 			if(HttpContext.Session.Get("User") == null)
@@ -63,58 +65,7 @@ namespace finalProjectApp.Controllers
 
 			return View(user);
 		}
-		public ActionResult CreateUserAdministration()
-		{
-			if (HttpContext.Session.Get("User") == null)
-			{
-				LoginModel login = new LoginModel();
-				return RedirectToAction("Index", "Home", login);
-			}
 
-			var userJson = HttpContext.Session.Get("User");
-			var user = JsonSerializer.Deserialize<UserModel>(userJson);
-
-			return View(user);
-		}
-		public ActionResult UserReports()
-		{
-			if (HttpContext.Session.Get("User") == null)
-			{
-				LoginModel login = new LoginModel();
-				return RedirectToAction("Index", "Home", login);
-			}
-
-			var userJson = HttpContext.Session.Get("User");
-			var user = JsonSerializer.Deserialize<UserModel>(userJson);
-
-			return View(user);
-		}
-		public ActionResult CreateUserReports()
-		{
-			if (HttpContext.Session.Get("User") == null)
-			{
-				LoginModel login = new LoginModel();
-				return RedirectToAction("Index", "Home", login);
-			}
-
-			var userJson = HttpContext.Session.Get("User");
-			var user = JsonSerializer.Deserialize<UserModel>(userJson);
-
-			return View(user);
-		}
-		public ActionResult Gate()
-		{
-			if (HttpContext.Session.Get("User") == null)
-			{
-				LoginModel login = new LoginModel();
-				return RedirectToAction("Index", "Home", login);
-			}
-
-			var userJson = HttpContext.Session.Get("User");
-			var user = JsonSerializer.Deserialize<UserModel>(userJson);
-
-			return View(user);
-		}
 		public IActionResult Logout()
 		{
 			LoginModel login = new LoginModel();

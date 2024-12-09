@@ -7,35 +7,78 @@
 	var userJson = Context.Session.GetString("User");
 }
 @model UserModel
+<div class="userData" data-user="@userJson" id="userIndex" ></div>
 <div class="upperpanel">
 	<div class="sitename">
-		<h1>Panel użytkownika</h1>
+		<h2>Panel użytkownika</h2>
 	</div>
-	<div class="user">
-		<h1>User: @Model.Name</h1>
-	</div>
-	<div class="function">
-		<a href="" target="_blank">
-			<button class="profilebutton" type="button">Profil</button>
-		</a>
-		<a href="@Url.Action("Logout","User")">
-			<button class="logoutbutton" type="button">Wyloguj</button>
-		</a>
-	</div>
+	<a href="@Url.Action("Logout","User")">
+		<div class="function">
+			Wyloguj
+		</div>
+	</a>
 </div>
-
 <div class="panel">
 	<div class="menu">
-		<div class="administration">
-			<a asp-area="" asp-controller="User" asp-action="CreateUserAdministration">Utwórz sprawę administracyjną</a><br />
-			<a asp-area="" asp-controller="User" asp-action="UserAdministration">Wyświetl twoje sprawy administracyjne</a>
-		</div>
-		<div class="reports">
-			<a asp-area="" asp-controller="User" asp-action="UserReports">Utwórz zgłoszenie technincze</a><br />	
-			<a asp-area="" asp-controller="User" asp-action="CreateUserReports">Wyświetl twoje zgłoszenia techniczne</a>
-		</div>
-		<div class="gate">
-			<a asp-area="" asp-controller="User" asp-action="Gate">Wyświetl kod do bramy</a>
-		</div>
+		<a asp-area="" asp-controller="User" asp-action="CreateAdministrativeCase">
+			<div class="administrativeCases">
+				Utwórz sprawę administracyjną
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="ShowAdministrativeCases">
+			<div class="administrativeCases">
+				Wyświetl twoje sprawy administracyjne
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="ShowActiveAdministrativeCases">
+			<div class="administrativeCasesManagement">
+				Wyświetl bieżące sprawy administracyjne
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="ShowArchivedAdministrativeCases">
+			<div class="administrativeCasesManagement">
+				Wyświetl archiwum spraw administracyjnych
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="CreateTechnicalTask">
+			<div class="technicalTasks">
+				Utwórz zgłoszenie technincze
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="ShowTechnicalTasks">
+			<div class="technicalTasks">
+				Wyświetl twoje zgłoszenia techniczne
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="ShowActiveTechnicalTasks">
+			<div class="technicalTasksManagement">
+				Wyświetl aktywne zgłoszenia technincze
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="ShowArchivedTechnicalTasks">
+			<div class="technicalTasksManagement">
+				Wyświetl zamknięte zgłoszenia techniczne
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="CreateTechnician">
+			<div class="techniciansAdministration">
+				Utwórz nowe konto technika
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="ManageTechnician">
+			<div class="techniciansAdministration">
+				Zarządzaj technikami
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="CreateUser">
+			<div class="usersAdministation">
+				Utwórz nowego użytkownika
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="ManageUser">
+			<div class="usersAdministation">
+				Zarządzaj użytkownikami
+			</div>
+		</a>
 	</div>
 </div>
