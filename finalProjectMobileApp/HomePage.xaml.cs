@@ -1,41 +1,49 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
+using Microsoft.Maui.Controls;
 
 namespace finalProjectMobileApp;
 
 public partial class HomePage : ContentPage
 {
-	public HomePage(int userId)
+	public HomePage(int technicianId)
 	{
 		InitializeComponent();
-		UserClass user = GetUserData(userId);
-		BindingContext = user;
+		TechnicianClass technician = GetUserData(technicianId);
+
+		if (technician.PasswordExpired == true)
+		{
+			ChangePasswordPage changePasswordPage = new ChangePasswordPage(technician.PasswordExpired, technicianId);
+			Navigation.PopAsync();
+			Navigation.PushAsync(changePasswordPage);
+		}
+
+		string message = $"Witaj, {technician.Name} {technician.Lastname}";
+
+		welcomeLabel.Text = message;
 
 	}
 
-	public UserClass GetUserData(int userId)
+	public TechnicianClass GetUserData(int userId)
 	{
 		ConnectionClass connectionClass = new ConnectionClass();
 		SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 		connection.Open();
-		SqlCommand selectUser = new SqlCommand("SELECT UserId, UserLogin, FirstName, LastName, MailAddress, RoleName, PasswordExpired, PasswordChangedOn, UserEnabled FROM dbo.vw_SelectUser WHERE UserId = " + userId, connection);
-		UserClass user = new UserClass();
+		SqlCommand selectUser = new SqlCommand("SELECT TechnicianId, TechnicianLogin, TechnicianFirstName, TechnicianLastName, TechnicianPasswordExpired, TechnicianPasswordChangedOn, TechnicianEnabled FROM dbo.vw_SelectTechnician WHERE TechnicianId = " + userId, connection);
+		TechnicianClass technician = new TechnicianClass();
 		SqlDataReader reader = selectUser.ExecuteReader();
 		if (reader.Read())
 		{
-			user.Id = (Int32)reader[0];
-			user.Username = (String)reader[1];
-			user.Name = (String)reader[2];
-			user.Lastname = (String)reader[3];
-			user.Email = (String)reader[4];
-			user.UserRole = (String)reader[5];
-			user.PasswordExpired = (Boolean)reader[6];
-			user.PassworedChangedOn = (DateTime)reader[7];
-			user.Enabled = (Boolean)reader[8];
+			technician.Id = (Int32)reader[0];
+			technician.Username = (String)reader[1];
+			technician.Name = (String)reader[2];
+			technician.Lastname = (String)reader[3];
+			technician.PasswordExpired = (Boolean)reader[4];
+			technician.PassworedChangedOn = (DateTime)reader[5];
+			technician.Enabled = (Boolean)reader[6];
 		}
 		connection.Close();
 
-		return user;
+		return technician;
 	}
-
 }

@@ -8,9 +8,9 @@
     @Html.BeginForm("Login","Home",FormMethod.Post)
         <fieldset>
             <label name="username" id="username">Nazwa użytkownika:</label>
-            <input type="text" name="username" id="username" maxlength="15"/><br />
+            <input type="text" name="username" id="username" maxlength="15" required /><br />
             <label name="userpassword" id="userpassword">Hasło:</label> 
-            <input type="password" id="userpassword" name="userpassword" /><br />
+            <input type="password" id="userpassword" name="userpassword" required /><br />
             <input type="submit" value="Zaloguj" name="logIn" id="logIn" />
         </fieldset>
 	@{

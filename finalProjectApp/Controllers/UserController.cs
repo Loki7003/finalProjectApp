@@ -1,6 +1,7 @@
 ﻿using finalProjectApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text.Json;
 
@@ -34,9 +35,19 @@ namespace finalProjectApp.Controllers
 				connection.Close();
 				if (user.Enabled)
 				{
-					var userJson = JsonSerializer.Serialize(user);
-					HttpContext.Session.SetString("User", userJson);
-					return View(user);
+					if (!user.PasswordExpired)
+					{
+						var userJson = JsonSerializer.Serialize(user);
+						HttpContext.Session.SetString("User", userJson);
+						return View(user);
+					}
+					else
+					{
+                        var userJson = JsonSerializer.Serialize(user);
+                        HttpContext.Session.SetString("User", userJson);
+						ChangePasswordModel changePassword = new ChangePasswordModel();
+                        return RedirectToAction("ChangeUserPassword", "User", changePassword);
+					}
 				}
 				else 
 				{
@@ -72,5 +83,63 @@ namespace finalProjectApp.Controllers
 			HttpContext.Session.Clear();
 			return RedirectToAction("Index", "Home", login);
 		}
+
+
+		public IActionResult ChangeUserPassword(ChangePasswordModel changePassword)
+		{
+            var userJson = HttpContext.Session.Get("User");
+            var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
+            return View(changePassword);
+        }
+
+		public ActionResult ChangePassword(string newPassword, string confirmNewPassword)
+		{
+
+            ChangePasswordModel changePassword = new ChangePasswordModel();
+
+            var userJson = HttpContext.Session.Get("User");
+            var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
+            if (string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmNewPassword))
+			{
+				changePassword.ChangeResponse = 2;
+				return RedirectToAction("ChangeUserPassword", "User", changePassword);
+			}
+			else if (newPassword != confirmNewPassword)
+			{
+                changePassword.ChangeResponse = 3;
+                return RedirectToAction("ChangeUserPassword", "User", changePassword);
+            }
+            else
+            {
+                ConnectionClass connectionClass = new ConnectionClass();
+                SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+                connection.Open();
+                SqlCommand authenticate = new SqlCommand("dbo.sp_ChangeUserPassword", connection);
+                authenticate.CommandType = CommandType.StoredProcedure;
+                authenticate.Parameters.AddWithValue("@UserId", SqlDbType.NVarChar).Value = user.Id;
+                authenticate.Parameters.AddWithValue("@NewPassword", SqlDbType.NVarChar).Value = newPassword;
+                authenticate.Parameters.Add("@ResponseValue", SqlDbType.Int);
+                authenticate.Parameters["@ResponseValue"].Direction = ParameterDirection.Output;
+                authenticate.ExecuteNonQuery();
+                int response = (Int32)authenticate.Parameters["@ResponseValue"].Value;
+                connection.Close();
+
+                if (response == 0)
+                {
+                    changePassword.ChangeResponse = 0;
+                    return RedirectToAction("ChangeUserPassword", "User", changePassword);
+                }
+                else
+                {
+                    changePassword.ChangeResponse = 1;
+					user.PasswordExpired = false;
+                    var userJson1 = JsonSerializer.Serialize(user);
+                    HttpContext.Session.SetString("User", userJson1);
+                    return RedirectToAction("ChangeUserPassword", "User", changePassword);
+                }
+            }
+        }
 	}
 }
