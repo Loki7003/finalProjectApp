@@ -1,0 +1,30 @@
+﻿@{
+	ViewData["Title"] = "Wyświetl twoje sprawy administracyjne";
+	var casesJson = ViewData["CasesJson"] as string;
+}
+@model UserModel
+
+<div class="casesData" data-cases="@casesJson" id="showAdminCases"></div>
+<div class="upperpanel">
+	<div class="sitename">
+		<h2>Wyświetl twoje sprawy administracyjne</h2>
+	</div>
+	<a href="@Url.Action("Logout","User")">
+		<div class="function">
+			Wyloguj
+		</div>
+	</a>
+</div>
+
+<div class="text-center" id="showAdminCasesDiv">
+	<table id="showAdminCasesTable" class="adminCasesTable">
+		<thead>
+			<tr>
+				<th>Numer sprawy</th>
+				<th>Temat sprawy</th>
+				<th>Data utworzenia sprawy</th>
+				<th>Status sprawy</th>
+			</tr>
+		</thead>
+	</table>
+</div>

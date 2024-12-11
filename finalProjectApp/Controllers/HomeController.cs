@@ -31,7 +31,7 @@ namespace finalProjectApp.Controllers
 		{
 			return View();
 		}
-
+		[HttpPost]
 		public ActionResult Login(string username, string userpassword)
 		{
 			
@@ -59,7 +59,7 @@ namespace finalProjectApp.Controllers
 			else
 			{
 				login.Id = (Int32)authenticate.Parameters["@UserId"].Value;
-				return RedirectToAction("Index", "User", login);
+				return RedirectToAction("UserMenu", "User", login);
 			}
 		}
 	}
