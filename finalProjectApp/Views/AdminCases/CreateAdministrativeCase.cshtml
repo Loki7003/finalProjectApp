@@ -1,0 +1,25 @@
+﻿@{
+	ViewData["Title"] = "Utwórz sprawę administracyjną";
+}
+@model UserModel
+<div class="upperpanel">
+	<div class="sitename">
+		<h2>Utwórz sprawę administracyjną</h2>
+	</div>
+	<a href="@Url.Action("Logout","User")">
+		<div class="function">
+			Wyloguj
+		</div>
+	</a>
+</div>
+
+<div class="text-center">
+	@Html.BeginForm("AddCase", "AdminCases", FormMethod.Post)
+	<fieldset>
+		<label name="caseSubject" id="caseSubject" for="caseSubject">Temat sprawy:</label><br />
+		<input type="text" name="caseSubject" id="caseSubject" maxlength="30" required /><br /> 
+		<label name="caseDetails" id="caseDetails" for="caseDetails">Opis sprawy:</label><br />
+		<textarea name="caseDetails" id="caseDetails" required></textarea><br />
+		<input type="submit" value="Utwórz sprawę" name="addCase" id="addCase" />
+	</fieldset>
+</div>

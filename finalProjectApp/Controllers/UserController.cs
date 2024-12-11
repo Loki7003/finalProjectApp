@@ -3,14 +3,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace finalProjectApp.Controllers
 {
 	public class UserController : Controller
 	{
-
-		public ActionResult Index(LoginModel login)
+		private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+		{
+			Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+			WriteIndented = true
+		};
+		public ActionResult UserMenu(LoginModel login)
 		{
 			if (login.Id != -1)
 			{
@@ -32,21 +37,19 @@ namespace finalProjectApp.Controllers
 					user.PassworedChangedOn = (DateTime)reader[7];
 					user.Enabled = (Boolean)reader[8];
 				}
+				reader.Close();
 				connection.Close();
 				if (user.Enabled)
 				{
+					var userJson = JsonSerializer.Serialize(user, _options);
+					HttpContext.Session.SetString("User", userJson);
 					if (!user.PasswordExpired)
 					{
-						var userJson = JsonSerializer.Serialize(user);
-						HttpContext.Session.SetString("User", userJson);
 						return View(user);
 					}
 					else
 					{
-                        var userJson = JsonSerializer.Serialize(user);
-                        HttpContext.Session.SetString("User", userJson);
-						ChangePasswordModel changePassword = new ChangePasswordModel();
-                        return RedirectToAction("ChangeUserPassword", "User", changePassword);
+                        return RedirectToAction("ChangeUserPassword", "User");
 					}
 				}
 				else 
@@ -62,21 +65,6 @@ namespace finalProjectApp.Controllers
 			}
 		}
 
-		//Sample method for later
-		public ActionResult UserAdministration()
-		{
-			if(HttpContext.Session.Get("User") == null)
-			{
-				LoginModel login = new LoginModel();
-				return RedirectToAction("Index", "Home", login);
-			}
-
-			var userJson = HttpContext.Session.Get("User");
-			var user = JsonSerializer.Deserialize<UserModel>(userJson);
-
-			return View(user);
-		}
-
 		public IActionResult Logout()
 		{
 			LoginModel login = new LoginModel();
@@ -84,13 +72,13 @@ namespace finalProjectApp.Controllers
 			return RedirectToAction("Index", "Home", login);
 		}
 
-
-		public IActionResult ChangeUserPassword(ChangePasswordModel changePassword)
+		public IActionResult ChangeUserPassword()
 		{
             var userJson = HttpContext.Session.Get("User");
             var user = JsonSerializer.Deserialize<UserModel>(userJson);
+			ChangePasswordModel changePassword = new ChangePasswordModel();
 
-            return View(changePassword);
+			return View(changePassword);
         }
 
 		public ActionResult ChangePassword(string newPassword, string confirmNewPassword)
@@ -135,7 +123,7 @@ namespace finalProjectApp.Controllers
                 {
                     changePassword.ChangeResponse = 1;
 					user.PasswordExpired = false;
-                    var userJson1 = JsonSerializer.Serialize(user);
+                    var userJson1 = JsonSerializer.Serialize(user,_options);
                     HttpContext.Session.SetString("User", userJson1);
                     return RedirectToAction("ChangeUserPassword", "User", changePassword);
                 }

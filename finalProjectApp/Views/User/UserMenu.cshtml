@@ -1,0 +1,90 @@
+﻿@{
+	ViewData["Title"] = "Panel użytkownika";
+	if (Context.Session.GetString("User") == null)
+	{
+		Context.Response.Redirect("/Home/Index");
+	}
+	var userJson = Context.Session.GetString("User");
+}
+@model UserModel
+
+<div class="userData" data-user="@userJson" id="userMenu" ></div>
+<div class="upperpanel">
+	<div class="sitename">
+		<h2>Panel użytkownika</h2>
+	</div>
+	<a href="@Url.Action("Logout","User")">
+		<div class="function">
+			Wyloguj
+		</div>
+	</a>
+</div>
+<div class="panel">
+	<div class="menu">
+		<a asp-area="" asp-controller="AdminCases" asp-action="CreateAdministrativeCase" class="administrativeCasesLink">
+			<div class="administrativeCases">
+				Utwórz sprawę administracyjną
+			</div>
+		</a>
+		<a asp-area="" asp-controller="AdminCases" asp-action="ShowAdministrativeCases" class="administrativeCasesLink">
+			<div class="administrativeCases">
+				Wyświetl twoje sprawy administracyjne
+			</div>
+		</a>
+		<a asp-area="" asp-controller="AdminCases" asp-action="ShowActiveAdministrativeCases" class="administrativeCasesManagementLink">
+			<div class="administrativeCasesManagement">
+				Wyświetl bieżące sprawy administracyjne
+			</div>
+		</a>
+		<a asp-area="" asp-controller="AdminCases" asp-action="ShowArchivedAdministrativeCases" class="administrativeCasesManagementLink">
+			<div class="administrativeCasesManagement">
+				Wyświetl archiwum spraw administracyjnych
+			</div>
+		</a>
+		<a asp-area="" asp-controller="TechnicalTasks" asp-action="CreateTechnicalTask" class="technicalTasksLink">
+			<div class="technicalTasks">
+				Utwórz zgłoszenie techniczne
+			</div>
+		</a>
+		<a asp-area="" asp-controller="TechnicalTasks" asp-action="ShowTechnicalTasks" class="technicalTasksLink">
+			<div class="technicalTasks">
+				Wyświetl twoje zgłoszenia techniczne
+			</div>
+		</a>
+		<a asp-area="" asp-controller="TechnicalTasks" asp-action="ShowActiveTechnicalTasks" class="technicalTasksManagementLink">
+			<div class="technicalTasksManagement">
+				Wyświetl aktywne zgłoszenia technincze
+			</div>
+		</a>
+		<a asp-area="" asp-controller="TechnicalTasks" asp-action="ShowArchivedTechnicalTasks" class="technicalTasksManagementLink">
+			<div class="technicalTasksManagement">
+				Wyświetl zamknięte zgłoszenia techniczne
+			</div>
+		</a>
+		<a asp-area="" asp-controller="UsersManagement" asp-action="CreateTechnician" class="techniciansAdministrationLink">
+			<div class="techniciansAdministration">
+				Utwórz nowe konto technika
+			</div>
+		</a>
+		<a asp-area="" asp-controller="UsersManagement" asp-action="ManageTechnician" class="techniciansAdministrationLink">
+			<div class="techniciansAdministration">
+				Zarządzaj technikami
+			</div>
+		</a>
+		<a asp-area="" asp-controller="UsersManagement" asp-action="CreateUser" class="usersAdministationLink">
+			<div class="usersAdministation">
+				Utwórz nowego użytkownika
+			</div>
+		</a>
+		<a asp-area="" asp-controller="UsersManagement" asp-action="ManageUser" class="usersAdministationLink">
+			<div class="usersAdministation">
+				Zarządzaj użytkownikami
+			</div>
+		</a>
+		<a asp-area="" asp-controller="User" asp-action="ChangeUserPassword">
+			<div class="changePassword">
+				Zmień hasło
+			</div>
+		</a>
+	</div>
+</div>
