@@ -12,3 +12,36 @@
 		</div>
 	</a>
 </div>
+<div class="text-center">
+	@Html.BeginForm("AddTask", "TechnicalTasks", FormMethod.Post)
+	<fieldset class="dataForm">
+		<label name="taskSubject" id="taskSubject" for="taskSubject">Temat zgłoszenia:</label>
+		<br />
+		<input type="text" name="taskSubject" id="taskSubject" maxlength="30" required />
+		<br />
+		<label name="taskCategory" id="taskCategory" for="taskCategory">Kategoria zgłoszenia:</label>
+		<br />
+		<select id="taskCategory" name="taskCategory" required>
+			<option value="" disabled selected>Wybierz kategorię</option>
+			<option value="1">Hydrauliczne</option>
+			<option value="2">Elektryczne</option>
+			<option value="3">Gazowe</option>
+			<option value="4">Remontowo-budowlane</option>
+			<option value="5">Serwisowe i instalacyjne AGD</option>
+			<option value="6">Serwisowe i instalacyjne IT</option>
+		</select>
+		<br />
+		<label name="taskDetails" id="taskDetails" for="taskDetails">Opis zgłoszenia:</label>
+		<br />
+		<textarea name="taskDetails" id="taskDetails" required></textarea>
+		<br />
+		<input type="submit" value="Utwórz zgłoszenie" name="addCase" id="addCase" />
+	</fieldset>
+</div>
+<div class="returnButton">
+	<a asp-area="" asp-controller="User" asp-action="UserMenu">
+		<div class="returnMenu">
+			<h4>Powrót do menu</h4>
+		</div>
+	</a>
+</div>

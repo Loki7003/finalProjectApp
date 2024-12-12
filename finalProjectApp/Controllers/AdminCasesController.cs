@@ -47,7 +47,8 @@ namespace finalProjectApp.Controllers
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseRequestor = " + user.Id, connection);
+			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseRequestor = @userId ORDER BY CaseCreated DESC, CaseStatus ASC, CaseId DESC", connection);
+			selectCases.Parameters.AddWithValue("@userId", user.Id);
 			SqlDataReader reader = selectCases.ExecuteReader();
 			while (reader.Read())
 			{
@@ -84,6 +85,36 @@ namespace finalProjectApp.Controllers
 			var userJson = HttpContext.Session.Get("User");
 			var user = JsonSerializer.Deserialize<UserModel>(userJson);
 
+			List<AdministrativeCaseModel> administrativeCasesList = new List<AdministrativeCaseModel>();
+			string casesJson;
+
+			ConnectionClass connectionClass = new ConnectionClass();
+			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+			connection.Open();
+			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseStatus BETWEEN 1 AND 3 ORDER BY CaseCreated DESC, CaseStatus ASC, CaseId DESC", connection);
+			selectCases.Parameters.AddWithValue("@userId", user.Id);
+			SqlDataReader reader = selectCases.ExecuteReader();
+			while (reader.Read())
+			{
+				AdministrativeCaseModel admin = new AdministrativeCaseModel()
+				{
+					CaseId = reader.GetInt32(0),
+					CaseSubject = reader.IsDBNull(1) ? null : reader.GetString(1),
+					CaseDetails = reader.IsDBNull(2) ? null : reader.GetString(2),
+					CaseCreated = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
+					CaseRequestor = reader.IsDBNull(4) ? null : reader.GetString(4),
+					AssignedEmployee = reader.IsDBNull(5) ? null : reader.GetString(5),
+					CaseResponse = reader.IsDBNull(6) ? null : reader.GetString(6),
+					CaseClosed = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7),
+					CaseStatus = reader.IsDBNull(8) ? null : reader.GetString(8)
+				};
+				administrativeCasesList.Add(admin);
+			}
+			casesJson = JsonSerializer.Serialize(administrativeCasesList, _options);
+			connection.Close();
+
+			ViewData["CasesJson"] = casesJson;
+
 			return View(user);
 		}
 
@@ -97,6 +128,36 @@ namespace finalProjectApp.Controllers
 
 			var userJson = HttpContext.Session.Get("User");
 			var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
+			List<AdministrativeCaseModel> administrativeCasesList = new List<AdministrativeCaseModel>();
+			string casesJson;
+
+			ConnectionClass connectionClass = new ConnectionClass();
+			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+			connection.Open();
+			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseStatus BETWEEN 4 AND 5 ORDER BY CaseCreated DESC, CaseId DESC", connection);
+			selectCases.Parameters.AddWithValue("@userId", user.Id);
+			SqlDataReader reader = selectCases.ExecuteReader();
+			while (reader.Read())
+			{
+				AdministrativeCaseModel admin = new AdministrativeCaseModel()
+				{
+					CaseId = reader.GetInt32(0),
+					CaseSubject = reader.IsDBNull(1) ? null : reader.GetString(1),
+					CaseDetails = reader.IsDBNull(2) ? null : reader.GetString(2),
+					CaseCreated = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
+					CaseRequestor = reader.IsDBNull(4) ? null : reader.GetString(4),
+					AssignedEmployee = reader.IsDBNull(5) ? null : reader.GetString(5),
+					CaseResponse = reader.IsDBNull(6) ? null : reader.GetString(6),
+					CaseClosed = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7),
+					CaseStatus = reader.IsDBNull(8) ? null : reader.GetString(8)
+				};
+				administrativeCasesList.Add(admin);
+			}
+			casesJson = JsonSerializer.Serialize(administrativeCasesList, _options);
+			connection.Close();
+
+			ViewData["CasesJson"] = casesJson;
 
 			return View(user);
 		}
@@ -116,8 +177,9 @@ namespace finalProjectApp.Controllers
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseId = " + caseId, connection);
-			SqlDataReader reader = selectCases.ExecuteReader();
+			SqlCommand selectCase = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseId = @caseId", connection);
+			selectCase.Parameters.AddWithValue("@caseId", caseId);
+			SqlDataReader reader = selectCase.ExecuteReader();
 			if (reader.Read())
 			{
 				AdministrativeCaseModel admin = new AdministrativeCaseModel()
@@ -142,7 +204,7 @@ namespace finalProjectApp.Controllers
 			}
 			else
 			{
-				return RedirectToAction("AdminCase", "ShowAdministrativeCases");
+				return RedirectToAction("ShowAdministrativeCases", "AdminCases");
 			}
 			
 		}
@@ -165,10 +227,42 @@ namespace finalProjectApp.Controllers
 			createCaseCommand.Parameters["@Response"].Direction = ParameterDirection.Output;
 			createCaseCommand.ExecuteNonQuery();
 
-			int caseID = (Int32)createCaseCommand.Parameters["@Response"].Value;
 			connection.Close();
 
-			return null;
+			return RedirectToAction("ShowAdministrativeCases", "AdminCases");
+		}
+
+		[HttpGet]
+		public IActionResult UpdateCase(int caseId, int caseStatus, int userId)
+		{
+			ConnectionClass connectionClass = new ConnectionClass();
+			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+			connection.Open();
+			SqlCommand updateCaseCommand = new SqlCommand("UPDATE AdministrativeCases SET CaseStatus = @caseStatus, AssignedEmployee = @userId WHERE CaseId = @caseId", connection);
+			updateCaseCommand.Parameters.AddWithValue("@caseStatus", caseStatus);
+			updateCaseCommand.Parameters.AddWithValue("@caseId", caseId);
+			updateCaseCommand.Parameters.AddWithValue("@userId", userId);
+			updateCaseCommand.ExecuteNonQuery();
+			connection.Close();
+
+			return RedirectToAction("CaseDetails", "AdminCases", new { caseId = caseId });
+		}
+
+		[HttpGet]
+		public IActionResult CloseCase(int caseId, int caseStatus, string caseResponse, int userId)
+		{
+			ConnectionClass connectionClass = new ConnectionClass();
+			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+			connection.Open();
+			SqlCommand updateCaseCommand = new SqlCommand("UPDATE AdministrativeCases SET CaseStatus = @caseStatus, CaseResponse = @caseResponse, AssignedEmployee = @userId, CaseClosed=GETDATE() WHERE CaseId = @caseId", connection);
+			updateCaseCommand.Parameters.AddWithValue("@caseStatus", caseStatus);
+			updateCaseCommand.Parameters.AddWithValue("@caseResponse", caseResponse);
+			updateCaseCommand.Parameters.AddWithValue("@caseId", caseId);
+			updateCaseCommand.Parameters.AddWithValue("@userId", userId);
+			updateCaseCommand.ExecuteNonQuery();
+			connection.Close();
+
+			return RedirectToAction("CaseDetails", "AdminCases", new { caseId = caseId });
 		}
 	}
 }

@@ -1,16 +1,16 @@
 ﻿@{
-	var caseId = ViewData["CaseId"];
-	var caseJson = ViewData["CaseJson"] as string;
-	ViewData["Title"] = "Szczegóły sprawy " + caseId;
+	var taskId = ViewData["taskId"];
+	var taskJson = ViewData["TaskJson"] as string;
+	ViewData["Title"] = "Szczegóły zgłoszenia " + taskId;
 	var userJson = Context.Session.GetString("User");
 }
 @model UserModel
 
-<div class="casesData" data-case="@caseJson" id="caseDetails"></div>
+<div class="tasksData" data-task="@taskJson" id="taskDetails"></div>
 <div class="userData" data-user="@userJson"></div>
 <div class="upperpanel">
 	<div class="sitename">
-		<h2>Szczegóły sprawy #@caseId</h2>
+		<h2>Szczegóły zgłoszenia #@taskId</h2>
 	</div>
 	<a href="@Url.Action("Logout","User")">
 		<div class="function">
@@ -18,8 +18,7 @@
 		</div>
 	</a>
 </div>
-<div class="text-center" id="caseDetailsDiv">
-	
+<div class="text-center" id="taskDetailsDiv">
 </div>
 <div class="returnButton">
 	<a asp-area="" asp-controller="User" asp-action="UserMenu">
