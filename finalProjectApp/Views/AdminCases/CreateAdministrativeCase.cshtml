@@ -15,11 +15,18 @@
 
 <div class="text-center">
 	@Html.BeginForm("AddCase", "AdminCases", FormMethod.Post)
-	<fieldset>
+	<fieldset class="dataForm">
 		<label name="caseSubject" id="caseSubject" for="caseSubject">Temat sprawy:</label><br />
 		<input type="text" name="caseSubject" id="caseSubject" maxlength="30" required /><br /> 
 		<label name="caseDetails" id="caseDetails" for="caseDetails">Opis sprawy:</label><br />
 		<textarea name="caseDetails" id="caseDetails" required></textarea><br />
 		<input type="submit" value="Utwórz sprawę" name="addCase" id="addCase" />
 	</fieldset>
+</div>
+<div class="returnButton">
+	<a asp-area="" asp-controller="User" asp-action="UserMenu">
+		<div class="returnMenu">
+			<h4>Powrót do menu</h4>
+		</div>
+	</a>
 </div>

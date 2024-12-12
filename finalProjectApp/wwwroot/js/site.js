@@ -6,6 +6,8 @@
 var userData;
 var casesData;
 var caseData;
+var tasksData;
+var taskData;
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -37,6 +39,24 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error(e);
     }
 
+    var tasksDataJson = document.getElementsByClassName("tasksData")[0];
+
+    try {
+        tasksData = JSON.parse(tasksDataJson.dataset.tasks);
+        console.log(tasksData);
+    } catch (e) {
+        console.error(e);
+    }
+
+    var taskDataJson = document.getElementById("taskDetails");
+
+    try {
+        taskData = JSON.parse(taskDataJson.dataset.task);
+        console.log(taskData);
+    } catch (e) {
+        console.error(e);
+    }
+
     var userMenu = document.getElementById("userMenu");
 
     if (userMenu) {
@@ -46,8 +66,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     var showAdminCases = document.getElementById("showAdminCases");
+    var showActiveAdminCases = document.getElementById("showActiveAdminCases");
+    var showArchivedAdminCases = document.getElementById("showArchivedAdminCases");
 
-    if (showAdminCases) {
+    if (showAdminCases || showActiveAdminCases || showArchivedAdminCases) {
 
         DisplayAdminCaseTable(casesData);
 
@@ -57,7 +79,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (caseDetails) {
 
-        DisplayCaseDetails(caseData,userData);
+        DisplayCaseDetails(caseData, userData);
+
+    }
+
+    var showTechTasks = document.getElementById("showTechTasks");
+    var showActiveTechTasks = document.getElementById("showActiveTechTasks");
+    var showArchivedTechTasks = document.getElementById("showArchivedTechTasks");
+
+    if (showTechTasks || showActiveTechTasks || showArchivedTechTasks) {
+
+        DisplayTechTaskTable(tasksData);
+
+    }
+
+    var taskDetails = document.getElementById("taskDetails");
+
+    if (taskDetails) {
+
+        DisplayTaskDetails(taskData, userData);
 
     }
 
@@ -113,7 +153,7 @@ function CheckRole(userData) {
 
         case "Administrator Systemu":
 
-            //removeElements(adminCase);
+            removeElements(adminCase);
             removeElements(techTask);
             break;
 
@@ -165,9 +205,9 @@ function DisplayCaseDetails(caseData,userData) {
 
     var div = document.getElementById("caseDetailsDiv");
 
-    if (caseData.AssignedEmplyee == undefined) {
+    if (caseData.AssignedEmployee == null) {
 
-        caseData.AssignedEmplyee = "Nie przypisano";
+        caseData.AssignedEmployee = "Nie przypisano";
 
     }
 
@@ -192,24 +232,21 @@ function DisplayCaseDetails(caseData,userData) {
     var rawCreatedDate = new Date(caseData.CaseCreated);
     var formattedCreatedDate = rawCreatedDate.toLocaleDateString('pl-PL');
     caseData.CaseCreated = formattedCreatedDate;
-    caseData.CaseStatus = "W realizacji";
 
-    var htmlText = "<div class='caseDetailsElementBig'><h3>Temat zgłoszenia: " + caseData.CaseSubject + "</h3><hr /></div>" +
+    var htmlText = "<div class='caseDetailsElementBig'><h3>Temat sprawy: " + caseData.CaseSubject + "</h3><hr /></div>" +
         "<div class='caseDetailsElementBig'><label for='caseDetailsParagraph'>Opis sprawy:</label><br /><p id='caseDetailsParagraph'>" + caseData.CaseDetails + "</p></div>" +
         "<div class='caseDetailsElement'><label for='caseRequestorParagraph'>Autor sprawy:</label></div><div class='caseDetailsElement'><label for='caseStatusParagraph'>Status sprawy:</label></div><div class='caseDetailsElement'><label for='caseCreatedParagraph'>Data utworzenia sprawy:</label></div>" +
         "<div class='caseDetailsElement'><p id='caseRequestorParagraph'/>" + caseData.CaseRequestor + "<p></div>" +
         "<div class='caseDetailsElement'><p id='caseStatusParagraph'>" + caseData.CaseStatus + "</p></div>" +
         "<div class='caseDetailsElement'><p id='caseCreatedParagraph'>" + caseData.CaseCreated + "</p></div>" +
         "<div class='caseDetailsElementMedium'><label for='assignedEmployeeParagraph'>Pracownik odpowiedzialny za sprawę:</label></div><div class='caseDetailsElementMedium'><label for='caseClosedParagraph'>Data zamknięcia sprawy:</label></div>" +
-        "<div class='caseDetailsElementMedium'><p id='assignedEmployeeParagraph'>" + caseData.AssignedEmplyee + "</p></div>" + 
+        "<div class='caseDetailsElementMedium'><p id='assignedEmployeeParagraph'>" + caseData.AssignedEmployee + "</p></div>" + 
         "<div class='caseDetailsElementMedium'><p id='caseClosedParagraph'>" + caseData.CaseClosed + "</p></div>" + 
         "<div class='caseDetailsElementBig'><label for='caseResponseTextArea'>Odpowiedź administracji:</label><textarea id='caseResponseTextArea' disabled>" + caseData.CaseResponse + "</textarea></div><br />";
 
     div.innerHTML = htmlText;
 
-    if (userData.UserRole == "Zarządca osiedla" || userData.UserRole == "Administrator Systemu") {
-
-        //Zmienić na form żeby zrobić to POSTem
+    if (userData.UserRole == "Zarządca osiedla") {
 
         var button = document.createElement("div");
         button.id = "updateCaseButton";
@@ -226,13 +263,13 @@ function DisplayCaseDetails(caseData,userData) {
                 button.style.gridColumn = "span 2";
                 button.innerHTML = "<p>Do zatwierdzenia</p>";
                 button.addEventListener("click", function () {
-                    window.location.href = `/AdminCases/UpdateCase?caseId=${caseData.CaseId}&caseStatus=${2}`;
+                    window.location.href = `/AdminCases/UpdateCase?caseId=${caseData.CaseId}&caseStatus=${2}&userId${userData.userId}`;
                 });
                 div.appendChild(button);
                 button1.style.gridColumn = "span 2";
                 button1.innerHTML = "<p>W realizacji</p>";
                 button1.addEventListener("click", function () {
-                    window.location.href = `/AdminCases/UpdateCase?caseId=${caseData.CaseId}&caseStatus=${3}`;
+                    window.location.href = `/AdminCases/UpdateCase?caseId=${caseData.CaseId}&caseStatus=${3}&userId${userData.userId}`;
                 });
                 div.appendChild(button1);
                 break;
@@ -244,7 +281,7 @@ function DisplayCaseDetails(caseData,userData) {
                 button.style.gridColumn = "span 2";
                 button.innerHTML = "<p>W realizacji</p>";
                 button.addEventListener("click", function () {
-                    window.location.href = `/AdminCases/UpdateCase?caseId=${caseData.CaseId}&caseStatus=${3}`;
+                    window.location.href = `/AdminCases/UpdateCase?caseId=${caseData.CaseId}&caseStatus=${3}&userId${userData.userId}`;
                 });
                 div.appendChild(button);
                 button1.style.gridColumn = "span 2";
@@ -253,7 +290,7 @@ function DisplayCaseDetails(caseData,userData) {
                     if (textarea.value == "") {
                         alert("Odpowiedź nie może być pusta!");
                     } else {
-                        window.location.href = `/AdminCases/CloseCase?caseId=${caseData.CaseId}&caseStatus=${5}&caseResponse=${textarea.value}`;
+                        window.location.href = `/AdminCases/CloseCase?caseId=${caseData.CaseId}&caseStatus=${5}&caseResponse=${textarea.value}&userId${userData.userId}`;
                     }
                 });
                 div.appendChild(button1);
@@ -269,7 +306,7 @@ function DisplayCaseDetails(caseData,userData) {
                     if (textarea.value == "") {
                         alert("Odpowiedź nie może być pusta!");
                     } else {
-                        window.location.href = `/AdminCases/CloseCase?caseId=${caseData.CaseId}&caseStatus=${4}&caseResponse=${textarea.value}`;
+                        window.location.href = `/AdminCases/CloseCase?caseId=${caseData.CaseId}&caseStatus=${4}&caseResponse=${textarea.value}&userId${userData.userId}`;
                     }
                 });
                 div.appendChild(button);
@@ -279,7 +316,7 @@ function DisplayCaseDetails(caseData,userData) {
                     if (textarea.value == "") {
                         alert("Odpowiedź nie może być pusta!");
                     } else {
-                        window.location.href = `/AdminCases/CloseCase?caseId=${caseData.CaseId}&caseStatus=${5}&caseResponse=${textarea.value}`;
+                        window.location.href = `/AdminCases/CloseCase?caseId=${caseData.CaseId}&caseStatus=${5}&caseResponse=${textarea.value}&userId${userData.userId}`;
                     }
                 });
                 div.appendChild(button1);
@@ -287,4 +324,87 @@ function DisplayCaseDetails(caseData,userData) {
                 
         }
     }
+}
+
+function DisplayTechTaskTable(tasksData) {
+
+    var table = document.getElementById("showTechTasksTable");
+    var tbody = table.createTBody();
+    var div = document.getElementById("showTechsTasksDiv");
+
+    if (tasksData == 0) {
+        table.style.display = "none";
+        div.appendChild("<h3>Nie utworzono jeszcze żadnych spraw administracyjnych</h3>");
+    }
+    else {
+        tasksData.forEach(taskData => {
+
+            var rawDate = new Date(taskData.TaskCreated);
+            var formattedDate = rawDate.toLocaleDateString('pl-PL');
+
+            var row = tbody.insertRow();
+            row.className = "caseRow";
+
+            row.addEventListener("click", function () {
+                window.location.href = `/TechnicalTasks/TaskDetails?taskId=${taskData.TaskId}`;
+            });
+
+
+            var cellTaskId = row.insertCell(0);
+            var cellTaskSubject = row.insertCell(1);
+            var cellTaskCategory = row.insertCell(2);
+            var cellCreatedDate = row.insertCell(3);
+            var cellTaskStatus = row.insertCell(4);
+
+            cellTaskId.textContent = taskData.TaskId;
+            cellTaskSubject.textContent = taskData.TaskSubject;
+            cellTaskCategory.textContent = taskData.TaskCategory;
+            cellCreatedDate.textContent = formattedDate;
+            cellTaskStatus.textContent = taskData.TaskStatus;
+
+            row.style.cursor = "pointer";
+
+        })
+    }
+}
+
+function DisplayTaskDetails(taskData) {
+
+    var div = document.getElementById("taskDetailsDiv");
+
+    if (taskData.TaskTechnician == null) {
+
+        taskData.TaskTechnician = "Nie przypisano";
+
+    }
+
+    if (taskData.TaskClosed == null) {
+
+        taskData.TaskClosed = "";
+
+    } else {
+
+        var rawClosedDate = new Date(taskData.TaskClosed);
+        var formattedClosedDate = rawClosedDate.toLocaleDateString('pl-PL');
+        taskData.TaskClosed = formattedClosedDate;
+
+    }
+
+    var rawCreatedDate = new Date(taskData.TaskCreated);
+    var formattedCreatedDate = rawCreatedDate.toLocaleDateString('pl-PL');
+    taskData.TaskCreated = formattedCreatedDate;
+
+    var htmlText = "<div class='taskDetailsElementBig'><h3>Temat zgłoszenia: " + taskData.TaskSubject + "</h3><hr /></div>" +
+        "<div class='taskDetailsElementBig'><label for='taskDetailsParagraph'>Opis zgłoszenia:</label><br /><p id='taskDetailsParagraph'>" + taskData.TaskDetails + "</p></div>" +
+        "<div class='taskDetailsElement'><label for='taskRequestorParagraph'>Autor zgłoszenia:</label></div><div class='taskDetailsElement'><label for='taskStatusParagraph'>Status zgłoszenia:</label></div><div class='taskDetailsElement'><label for='taskCreatedParagraph'>Data utworzenia zgłoszenia:</label></div>" +
+        "<div class='taskDetailsElement'><p id='taskRequestorParagraph'/>" + taskData.TaskRequestor + "<p></div>" +
+        "<div class='taskDetailsElement'><p id='taskStatusParagraph'>" + taskData.TaskStatus + "</p></div>" +
+        "<div class='taskDetailsElement'><p id='taskCreatedParagraph'>" + taskData.TaskCreated + "</p></div>" +
+        "<div class='taskDetailsElement'><label for='taskCategoryParagraph'>Kategoria zgłoszenia:</label></div><div class='taskDetailsElement'><label for='taskTechnicianParagraph'>Technik odpowiedzialny za zgłoszenie:</label></div><div class='taskDetailsElement'><label for='taskClosedParagraph'>Data zamknięcia zgłoszenia:</label></div>" +
+        "<div class='taskDetailsElement'><p id='taskCategoryParagraph' disabled>" + taskData.TaskCategory + "</p></div>" +
+        "<div class='taskDetailsElement'><p id='taskTechnicianParagraph'>" + taskData.TaskTechnician + "</p></div>" +
+        "<div class='taskDetailsElement'><p id='taskClosedParagraph'>" + taskData.TaskClosed + "</p></div><br />";
+
+    div.innerHTML = htmlText;
+
 }

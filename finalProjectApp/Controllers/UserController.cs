@@ -15,7 +15,7 @@ namespace finalProjectApp.Controllers
 			Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
 			WriteIndented = true
 		};
-		public ActionResult UserMenu(LoginModel login)
+		public IActionResult UserMenuRedirect(LoginModel login)
 		{
 			if (login.Id != -1)
 			{
@@ -43,14 +43,7 @@ namespace finalProjectApp.Controllers
 				{
 					var userJson = JsonSerializer.Serialize(user, _options);
 					HttpContext.Session.SetString("User", userJson);
-					if (!user.PasswordExpired)
-					{
-						return View(user);
-					}
-					else
-					{
-                        return RedirectToAction("ChangeUserPassword", "User");
-					}
+					return RedirectToAction("UserMenu", "User");
 				}
 				else 
 				{
@@ -63,6 +56,21 @@ namespace finalProjectApp.Controllers
 				login.LoginResponse = 10;
 				return RedirectToAction("Index", "Home", login);
 			}
+		}
+
+		public ActionResult UserMenu()
+		{
+			var userJson = HttpContext.Session.Get("User");
+			var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
+			if (!user.PasswordExpired)
+			{
+				return View();
+			}
+			else
+			{
+				return RedirectToAction("ChangeUserPassword", "User");
+			}	
 		}
 
 		public IActionResult Logout()

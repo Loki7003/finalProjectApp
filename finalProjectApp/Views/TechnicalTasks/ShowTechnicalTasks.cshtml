@@ -1,7 +1,10 @@
 ﻿@{
 	ViewData["Title"] = "Wyświetl twoje zgłoszenia techniczne";
+	var tasksJson = ViewData["TasksJson"] as string;
 }
 @model UserModel
+
+<div class="tasksData" data-tasks="@tasksJson" id="showTechTasks"></div>
 <div class="upperpanel">
 	<div class="sitename">
 		<h2>Wyświetl twoje zgłoszenia techniczne</h2>
@@ -9,6 +12,27 @@
 	<a href="@Url.Action("Logout","User")">
 		<div class="function">
 			Wyloguj
+		</div>
+	</a>
+</div>
+
+<div class="text-center dataTableDiv" id="showTechTasksDiv">
+	<table id="showTechTasksTable" class="techTasksTable dataTable">
+		<thead>
+			<tr>
+				<th>Numer zgłoszenia</th>
+				<th>Temat zgłoszenia</th>
+				<th>Kategoria zgłoszenia</th>
+				<th>Data utworzenia zgłoszenia</th>
+				<th>Status zgłoszenia</th>
+			</tr>
+		</thead>
+	</table>
+</div>
+<div class="returnButton">
+	<a asp-area="" asp-controller="User" asp-action="UserMenu">
+		<div class="returnMenu">
+			<h4>Powrót do menu</h4>
 		</div>
 	</a>
 </div>

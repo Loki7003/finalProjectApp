@@ -59,7 +59,7 @@ namespace finalProjectApp.Controllers
 			else
 			{
 				login.Id = (Int32)authenticate.Parameters["@UserId"].Value;
-				return RedirectToAction("UserMenu", "User", login);
+				return RedirectToAction("UserMenuRedirect", "User", login);
 			}
 		}
 	}
