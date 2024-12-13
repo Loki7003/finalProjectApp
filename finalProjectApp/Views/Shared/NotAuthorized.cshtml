@@ -1,0 +1,20 @@
+﻿@{
+	ViewData["Title"] = "Odmowa dostępu";
+}
+<div class="upperpanel-error">
+	<div class="sitename">
+		<h2>System Osiedlowy</h2>
+	</div>
+</div>
+<div class="text-center errorMessage">
+	<h1>Błąd 401 - Odmowa dostępu</h1>
+	<p>Przepraszamy, wygląda na to, że próbujesz dostać się do strony, do której nie jesteś uprawniony.</p>
+	<p>Jeżeli uważasz, że to błąd skontaktuj się administratorem systemu.</p>
+</div>
+<div class="returnButton">
+	<a asp-area="" asp-controller="User" asp-action="UserMenu">
+		<div class="returnMenu">
+			<h4>Powrót do menu</h4>
+		</div>
+	</a>
+</div>

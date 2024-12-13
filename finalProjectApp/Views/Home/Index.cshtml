@@ -1,18 +1,18 @@
 @{
-	ViewData["Title"] = "Home Page";
+	ViewData["Title"] = "Logowanie";
 }
 @model LoginModel
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Zaloguj się</h1>
     @Html.BeginForm("Login","Home",FormMethod.Post)
-    <fieldset class="dataForm">
-            <label name="username" id="username">Nazwa użytkownika:</label>
-            <input type="text" name="username" id="username" maxlength="15" required /><br />
-            <label name="userpassword" id="userpassword">Hasło:</label> 
-            <input type="password" id="userpassword" name="userpassword" required /><br />
-            <input type="submit" value="Zaloguj" name="logIn" id="logIn" />
-        </fieldset>
+    <fieldset class="loginForm">
+        <label name="username" id="username">Nazwa użytkownika:</label>
+        <input type="text" name="username" id="username" maxlength="15" required />
+        <label name="userpassword" id="userpassword">Hasło:</label> 
+        <input type="password" id="userpassword" name="userpassword" required />
+    </fieldset>
+    <input type="submit" value="Zaloguj" name="logIn" id="logIn" />
 	@{
 		if (Model.LoginResponse == 0)
 		{

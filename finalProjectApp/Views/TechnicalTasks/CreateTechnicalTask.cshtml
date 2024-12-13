@@ -1,5 +1,15 @@
 ﻿@{
 	ViewData["Title"] = "Utwórz zgłoszenie techniczne";
+	var userJson = Context.Session.GetString("User");
+	var userRole = "";
+	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
+	{
+		userRole = doc.RootElement.GetProperty("UserRole").GetString();
+	}
+	if (userRole == "Administrator użytkowników" || userRole == "Administrator Systemu")
+	{
+		Context.Response.Redirect("/Home/NotAuthorized");
+	}
 }
 @model UserModel
 <div class="upperpanel">
@@ -14,13 +24,10 @@
 </div>
 <div class="text-center">
 	@Html.BeginForm("AddTask", "TechnicalTasks", FormMethod.Post)
-	<fieldset class="dataForm">
+	<fieldset class="createForm">
 		<label name="taskSubject" id="taskSubject" for="taskSubject">Temat zgłoszenia:</label>
-		<br />
 		<input type="text" name="taskSubject" id="taskSubject" maxlength="30" required />
-		<br />
 		<label name="taskCategory" id="taskCategory" for="taskCategory">Kategoria zgłoszenia:</label>
-		<br />
 		<select id="taskCategory" name="taskCategory" required>
 			<option value="" disabled selected>Wybierz kategorię</option>
 			<option value="1">Hydrauliczne</option>
@@ -30,13 +37,10 @@
 			<option value="5">Serwisowe i instalacyjne AGD</option>
 			<option value="6">Serwisowe i instalacyjne IT</option>
 		</select>
-		<br />
 		<label name="taskDetails" id="taskDetails" for="taskDetails">Opis zgłoszenia:</label>
-		<br />
 		<textarea name="taskDetails" id="taskDetails" required></textarea>
-		<br />
-		<input type="submit" value="Utwórz zgłoszenie" name="addCase" id="addCase" />
 	</fieldset>
+	<input type="submit" value="Utwórz zgłoszenie" name="addTask" id="addTask" />
 </div>
 <div class="returnButton">
 	<a asp-area="" asp-controller="User" asp-action="UserMenu">

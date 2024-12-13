@@ -21,11 +21,16 @@ namespace finalProjectApp.Controllers
 			return View(login);
 		}
 
-		//[HttpPost]
-		//public ActionResult Index(LoginModel login)
-		//{
-		//	return View(login);
-		//}
+		public IActionResult NotFound()
+		{
+			Response.StatusCode = 404;
+			return View("~/Views/Shared/NotFound.cshtml");
+		}
+		public IActionResult NotAuthorized()
+		{
+			Response.StatusCode = 401;
+			return View("~/Views/Shared/NotAuthorized.cshtml");
+		}
 
 		public IActionResult Privacy()
 		{

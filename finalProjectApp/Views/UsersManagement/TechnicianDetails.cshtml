@@ -3,26 +3,28 @@
 	{
 		Context.Response.Redirect("/Home/Index");
 	}
-	ViewData["Title"] = "Wyświetl archiwum spraw administracyjnych";
-	var casesJson = ViewData["CasesJson"] as string;
+	var techId = ViewData["TechId"];
+
+	ViewData["Title"] = "Technik #" + techId;
+
+	var techJson = ViewData["TechJson"] as string;
 	var userJson = Context.Session.GetString("User");
 	var userRole = "";
 	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
 	{
 		userRole = doc.RootElement.GetProperty("UserRole").GetString();
 	}
-	if (userRole == "Administrator użytkowników" || userRole == "Nadzorca techniczny" || userRole == "Lokator")
+	if (userRole != "Administrator Systemu" && userRole != "Administrator użytkowników" && userRole != "Nadzorca techniczny")
 	{
 		Context.Response.Redirect("/Home/NotAuthorized");
 	}
 }
 @model UserModel
 
-
-<div class="casesData" data-cases="@casesJson" id="showArchivedAdminCases"></div>
+<div class="techsData" data-tech="@techJson" id="technicianDetails"></div>
 <div class="upperpanel">
 	<div class="sitename">
-		<h2>Wyświetl archiwum spraw administracyjnych</h2>
+		<h2>Szczegóły technika #@techId</h2>
 	</div>
 	<a href="@Url.Action("Logout","User")">
 		<div class="function">
@@ -30,18 +32,7 @@
 		</div>
 	</a>
 </div>
-
-<div class="text-center dataTableDiv" id="showAdminCasesDiv">
-	<table id="showAdminCasesTable" class="adminCasesTable dataTable">
-		<thead>
-			<tr>
-				<th>Numer sprawy</th>
-				<th>Temat sprawy</th>
-				<th>Data utworzenia sprawy</th>
-				<th>Status sprawy</th>
-			</tr>
-		</thead>
-	</table>
+<div class="text-center" id="technicianDetailsDiv">
 </div>
 <div class="returnButton">
 	<a asp-area="" asp-controller="User" asp-action="UserMenu">

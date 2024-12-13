@@ -1,5 +1,19 @@
 ﻿@{
+	if (Context.Session.GetString("User") == null)
+	{
+		Context.Response.Redirect("/Home/Index");
+	}
 	ViewData["Title"] = "Utwórz sprawę administracyjną";
+	var userJson = Context.Session.GetString("User");
+	var userRole = "";
+	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
+	{
+		userRole = doc.RootElement.GetProperty("UserRole").GetString();
+	}
+	if (userRole != "Lokator")
+	{
+		Context.Response.Redirect("/Home/NotAuthorized");
+	}
 }
 @model UserModel
 <div class="upperpanel">
@@ -15,13 +29,13 @@
 
 <div class="text-center">
 	@Html.BeginForm("AddCase", "AdminCases", FormMethod.Post)
-	<fieldset class="dataForm">
-		<label name="caseSubject" id="caseSubject" for="caseSubject">Temat sprawy:</label><br />
-		<input type="text" name="caseSubject" id="caseSubject" maxlength="30" required /><br /> 
-		<label name="caseDetails" id="caseDetails" for="caseDetails">Opis sprawy:</label><br />
-		<textarea name="caseDetails" id="caseDetails" required></textarea><br />
-		<input type="submit" value="Utwórz sprawę" name="addCase" id="addCase" />
+	<fieldset class="createForm">
+		<label name="caseSubject" id="caseSubject" for="caseSubject">Temat sprawy:</label>
+		<input type="text" name="caseSubject" id="caseSubject" maxlength="30" required /> 
+		<label name="caseDetails" id="caseDetails" for="caseDetails">Opis sprawy:</label>
+		<textarea name="caseDetails" id="caseDetails" required></textarea>
 	</fieldset>
+	<input type="submit" value="Utwórz sprawę" name="addCase" id="addCase" />
 </div>
 <div class="returnButton">
 	<a asp-area="" asp-controller="User" asp-action="UserMenu">

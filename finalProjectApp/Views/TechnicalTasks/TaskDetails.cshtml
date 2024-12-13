@@ -1,8 +1,21 @@
 ﻿@{
+	if (Context.Session.GetString("User") == null)
+	{
+		Context.Response.Redirect("/Home/Index");
+	}
 	var taskId = ViewData["taskId"];
 	var taskJson = ViewData["TaskJson"] as string;
 	ViewData["Title"] = "Szczegóły zgłoszenia " + taskId;
 	var userJson = Context.Session.GetString("User");
+	var userRole = "";
+	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
+	{
+		userRole = doc.RootElement.GetProperty("UserRole").GetString();
+	}
+	if (userRole == "Administrator użytkowników")
+	{
+		Context.Response.Redirect("/Home/NotAuthorized");
+	}
 }
 @model UserModel
 

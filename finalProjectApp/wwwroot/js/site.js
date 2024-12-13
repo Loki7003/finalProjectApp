@@ -8,6 +8,8 @@ var casesData;
 var caseData;
 var tasksData;
 var taskData;
+var techsData;
+var techData;
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -57,6 +59,24 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error(e);
     }
 
+    var techsDataJson = document.getElementById("manageTechnician");
+
+    try {
+        techsData = JSON.parse(techsDataJson.dataset.techs);
+        console.log(techsData);
+    } catch (e) {
+        console.error(e);
+    }
+
+    var techDataJson = document.getElementById("technicianDetails");
+
+    try {
+        techData = JSON.parse(techDataJson.dataset.tech);
+        console.log(techData);
+    } catch (e) {
+        console.error(e);
+    }
+
     var userMenu = document.getElementById("userMenu");
 
     if (userMenu) {
@@ -101,6 +121,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
+    var manageTechnician = document.getElementById("manageTechnician");
+
+    if (manageTechnician) {
+
+        DisplayTechnicianTable(techsData);
+
+    }
+
+    var technicianDetails = document.getElementById("technicianDetails");
+
+    if (technicianDetails) {
+
+        DisplayTechnicianDetails(techData);
+
+    }
+
+    var addUserForm = document.getElementById("addUserForm");
+
+    if (addUserForm) {
+
+        CheckAdminRole(userData,addUserForm);
+
+    }
+
 });
 
 function removeElements(elements) {
@@ -137,7 +181,6 @@ function CheckRole(userData) {
 
         case "Nadzorca techniczny":
 
-            
             removeElements(adminCase);
             removeElements(adminCaseMgmt);
             removeElements(usersAdmin);
@@ -161,6 +204,18 @@ function CheckRole(userData) {
 
 }
 
+function CheckAdminRole(userData, addUserForm) {
+
+    if (userData.UserRole == "Administrator użytkowników") {
+
+        var administrator = addUserForm.getElementsByTagName("option")[1];
+
+        administrator.disabled = true;
+
+    }
+
+}
+
 function DisplayAdminCaseTable(casesData) {
 
     var table = document.getElementById("showAdminCasesTable");
@@ -178,7 +233,7 @@ function DisplayAdminCaseTable(casesData) {
             var formattedDate = rawDate.toLocaleDateString('pl-PL');
 
             var row = tbody.insertRow();
-            row.className = "caseRow";            
+            row.className = "insertedRow";
 
             row.addEventListener("click", function () {
                 window.location.href = `/AdminCases/CaseDetails?caseId=${caseData.CaseId}`;
@@ -197,7 +252,33 @@ function DisplayAdminCaseTable(casesData) {
 
             row.style.cursor = "pointer";
 
-        })
+        });
+
+        $('#showAdminCasesTable').DataTable({
+            language: {
+                "decimal": ",",
+                "thousands": ".",
+                "search": "Szukaj:",
+                "lengthMenu": "Pokaż _MENU_ wpisów",
+                "info": "Wyświetlanie od _START_ do _END_ z _TOTAL_ wpisów",
+                "infoEmpty": "Brak dostępnych danych",
+                "infoFiltered": "(filtrowano z _MAX_ dostępnych wpisów)",
+                "infoPostFix": "",
+                "loadingRecords": "Ładowanie...",
+                "zeroRecords": "Brak pasujących wpisów",
+                "emptyTable": "Brak danych w tabeli",
+                "paginate": {
+                    "first": "Pierwsza",
+                    "previous": "Poprzednia",
+                    "next": "Następna",
+                    "last": "Ostatnia"
+                },
+                "aria": {
+                    "sortAscending": ": aktywuj, aby sortować rosnąco",
+                    "sortDescending": ": aktywuj, aby sortować malejąco"
+                }
+            }
+        });
     }
 }
 
@@ -252,21 +333,18 @@ function DisplayCaseDetails(caseData,userData) {
         button.id = "updateCaseButton";
         var button1 = document.createElement("div");
         button1.id = "updateCaseButton";
-        var button2 = document.createElement("div");
-        button2.id = "updateCaseButton";
-
 
         switch (caseData.CaseStatus) {
 
             case "Nowa":
 
-                button.style.gridColumn = "span 2";
+                button.style.gridColumn = "span 3";
                 button.innerHTML = "<p>Do zatwierdzenia</p>";
                 button.addEventListener("click", function () {
                     window.location.href = `/AdminCases/UpdateCase?caseId=${caseData.CaseId}&caseStatus=${2}&userId${userData.userId}`;
                 });
                 div.appendChild(button);
-                button1.style.gridColumn = "span 2";
+                button1.style.gridColumn = "span 3";
                 button1.innerHTML = "<p>W realizacji</p>";
                 button1.addEventListener("click", function () {
                     window.location.href = `/AdminCases/UpdateCase?caseId=${caseData.CaseId}&caseStatus=${3}&userId${userData.userId}`;
@@ -278,13 +356,13 @@ function DisplayCaseDetails(caseData,userData) {
 
                 var textarea = div.getElementsByTagName("textarea")[0];
                 textarea.disabled = false;
-                button.style.gridColumn = "span 2";
+                button.style.gridColumn = "span 3";
                 button.innerHTML = "<p>W realizacji</p>";
                 button.addEventListener("click", function () {
                     window.location.href = `/AdminCases/UpdateCase?caseId=${caseData.CaseId}&caseStatus=${3}&userId${userData.userId}`;
                 });
                 div.appendChild(button);
-                button1.style.gridColumn = "span 2";
+                button1.style.gridColumn = "span 3";
                 button1.innerHTML = "<p>Odrzucona</p>";
                 button1.addEventListener("click", function () {
                     if (textarea.value == "") {
@@ -300,7 +378,7 @@ function DisplayCaseDetails(caseData,userData) {
 
                 var textarea = div.getElementsByTagName("textarea")[0];
                 textarea.disabled = false;
-                button.style.gridColumn = "span 2";
+                button.style.gridColumn = "span 3";
                 button.innerHTML = "<p>Rozwiązana</p>";
                 button.addEventListener("click", function () {
                     if (textarea.value == "") {
@@ -310,7 +388,7 @@ function DisplayCaseDetails(caseData,userData) {
                     }
                 });
                 div.appendChild(button);
-                button1.style.gridColumn = "span 2";
+                button1.style.gridColumn = "span 3";
                 button1.innerHTML = "<p>Odrzucona</p>";
                 button1.addEventListener("click", function () {
                     if (textarea.value == "") {
@@ -334,7 +412,7 @@ function DisplayTechTaskTable(tasksData) {
 
     if (tasksData == 0) {
         table.style.display = "none";
-        div.appendChild("<h3>Nie utworzono jeszcze żadnych spraw administracyjnych</h3>");
+        div.appendChild("<h3>Nie utworzono jeszcze żadnych zgłoszeń technicznych</h3>");
     }
     else {
         tasksData.forEach(taskData => {
@@ -343,7 +421,7 @@ function DisplayTechTaskTable(tasksData) {
             var formattedDate = rawDate.toLocaleDateString('pl-PL');
 
             var row = tbody.insertRow();
-            row.className = "caseRow";
+            row.className = "insertedRow";
 
             row.addEventListener("click", function () {
                 window.location.href = `/TechnicalTasks/TaskDetails?taskId=${taskData.TaskId}`;
@@ -365,6 +443,32 @@ function DisplayTechTaskTable(tasksData) {
             row.style.cursor = "pointer";
 
         })
+
+        $('#showTechTasksTable').DataTable({
+            language: {
+                "decimal": ",",
+                "thousands": ".",
+                "search": "Szukaj:",
+                "lengthMenu": "Pokaż _MENU_ wpisów",
+                "info": "Wyświetlanie od _START_ do _END_ z _TOTAL_ wpisów",
+                "infoEmpty": "Brak dostępnych danych",
+                "infoFiltered": "(filtrowano z _MAX_ dostępnych wpisów)",
+                "infoPostFix": "",
+                "loadingRecords": "Ładowanie...",
+                "zeroRecords": "Brak pasujących wpisów",
+                "emptyTable": "Brak danych w tabeli",
+                "paginate": {
+                    "first": "Pierwsza",
+                    "previous": "Poprzednia",
+                    "next": "Następna",
+                    "last": "Ostatnia"
+                },
+                "aria": {
+                    "sortAscending": ": aktywuj, aby sortować rosnąco",
+                    "sortDescending": ": aktywuj, aby sortować malejąco"
+                }
+            }
+        });
     }
 }
 
@@ -401,10 +505,150 @@ function DisplayTaskDetails(taskData) {
         "<div class='taskDetailsElement'><p id='taskStatusParagraph'>" + taskData.TaskStatus + "</p></div>" +
         "<div class='taskDetailsElement'><p id='taskCreatedParagraph'>" + taskData.TaskCreated + "</p></div>" +
         "<div class='taskDetailsElement'><label for='taskCategoryParagraph'>Kategoria zgłoszenia:</label></div><div class='taskDetailsElement'><label for='taskTechnicianParagraph'>Technik odpowiedzialny za zgłoszenie:</label></div><div class='taskDetailsElement'><label for='taskClosedParagraph'>Data zamknięcia zgłoszenia:</label></div>" +
-        "<div class='taskDetailsElement'><p id='taskCategoryParagraph' disabled>" + taskData.TaskCategory + "</p></div>" +
+        "<div class='taskDetailsElement'><p id='taskCategoryParagraph'>" + taskData.TaskCategory + "</p></div>" +
         "<div class='taskDetailsElement'><p id='taskTechnicianParagraph'>" + taskData.TaskTechnician + "</p></div>" +
         "<div class='taskDetailsElement'><p id='taskClosedParagraph'>" + taskData.TaskClosed + "</p></div><br />";
 
     div.innerHTML = htmlText;
 
+}
+
+function DisplayTechnicianTable(techsData) {
+
+    var table = document.getElementById("manageTechnicianTable");
+    var tbody = table.createTBody();
+    var div = document.getElementById("manageTechnicianDiv");
+
+    if (techsData == 0) {
+        table.style.display = "none";
+        div.appendChild("<h3>Nie utworzono jeszcze żadnych kont techników</h3>");
+    }
+    else {
+        techsData.forEach(techData => {
+
+            var row = tbody.insertRow();
+            row.className = "insertedRow";
+
+            row.addEventListener("click", function () {
+                window.location.href = `/UsersManagement/TechnicianDetails?techId=${techData.TechId}`;
+            });
+
+
+            var cellTechId = row.insertCell(0);
+            var cellTechLogin = row.insertCell(1);
+            var cellTechFirstName = row.insertCell(2);
+            var cellTechLastName = row.insertCell(3);
+
+            cellTechId.textContent = techData.TechId;
+            cellTechLogin.textContent = techData.TechLogin;
+            cellTechFirstName.textContent = techData.TechFirstName;
+            cellTechLastName.textContent = techData.TechLastName;
+
+            row.style.cursor = "pointer";
+
+        });
+
+        $('#manageTechnicianTable').DataTable({
+            language: {
+                "decimal": ",",
+                "thousands": ".",
+                "search": "Szukaj:",
+                "lengthMenu": "Pokaż _MENU_ wpisów",
+                "info": "Wyświetlanie od _START_ do _END_ z _TOTAL_ wpisów",
+                "infoEmpty": "Brak dostępnych danych",
+                "infoFiltered": "(filtrowano z _MAX_ dostępnych wpisów)",
+                "infoPostFix": "",
+                "loadingRecords": "Ładowanie...",
+                "zeroRecords": "Brak pasujących wpisów",
+                "emptyTable": "Brak danych w tabeli",
+                "paginate": {
+                    "first": "Pierwsza",
+                    "previous": "Poprzednia",
+                    "next": "Następna",
+                    "last": "Ostatnia"
+                },
+                "aria": {
+                    "sortAscending": ": aktywuj, aby sortować rosnąco",
+                    "sortDescending": ": aktywuj, aby sortować malejąco"
+                }
+            }
+        });
+    }
+}
+
+document.getElementById("addTechForm").addEventListener("submit", function (event) {
+
+    const checkboxes = document.querySelectorAll('#addTechForm input[name="techSpecs"]');
+    const isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+    if (!isChecked) {
+        event.preventDefault();
+        alert('Proszę wybrać co najmniej jedną specjalizację technika!');
+    }
+});
+
+function DisplayTechnicianDetails(techData) {
+
+    var div = document.getElementById("technicianDetailsDiv");
+
+    var rawPasswordDate = new Date(techData.PasswordChangedOn);
+    var formattedPasswordDate = rawPasswordDate.toLocaleDateString('pl-PL');
+    techData.PasswordChangedOn = formattedPasswordDate;
+
+
+    if (techData.Enabled == 1) {
+
+        techData.Enabled = "Aktywne";
+
+    } else {
+
+        techData.Enabled = "Dezaktywowane";
+
+    }
+
+    var htmlText = "<div class='technicianDetailsElement'><label for='technicianFirstnameParagraph'>Imię:</label></div><div class='technicianDetailsElement'><label for='technicianLastnameParagraph'>Nazwisko:</label></div><div class='technicianDetailsElement'><label for='technicianLoginParagraph'>Login:</label></div>" +
+        "<div class='technicianDetailsElement'><p id='technicianFirstnameParagraph'/>" + techData.TechFirstName + "<p></div>" +
+        "<div class='technicianDetailsElement'><p id='technicianLastnameParagraph'>" + techData.TechLastName + "</p></div>" +
+        "<div class='technicianDetailsElement'><p id='technicianLoginParagraph'>" + techData.TechLogin + "</p></div>" +
+        "<div class='technicianDetailsElement'><label for='techSpecsParagraph'>Specjalizacje:</label></div><div class='technicianDetailsElement'><label for='technicianEnabledParagraph'>Status konta:</label></div><div class='technicianDetailsElement'><label for='technicianPasswordParagraph'>Ostania zmiana hasła:</label></div>" +
+        "<div class='technicianDetailsElement'><p id='techSpecsParagraph'>" + techData.SpecializationsName + "</p></div>" +
+        "<div class='technicianDetailsElement'><p id='technicianEnabledParagraph'>" + techData.Enabled + "</p></div>" +
+        "<div class='technicianDetailsElement'><p id='technicianPasswordParagraph'>" + techData.PasswordChangedOn + "</p></div>";
+
+    div.innerHTML = htmlText;
+
+    var button = document.createElement("div");
+    button.id = "updateCaseButton";
+    var button1 = document.createElement("div");
+    button1.id = "updateCaseButton";
+
+    switch (techData.Enabled) {
+
+        case "Aktywne":
+
+            button.style.gridColumn = "span 3";
+            button.innerHTML = "<p>Dezaktywuj konto</p>";
+            button.addEventListener("click", function () {
+                window.location.href = `/UsersManagement/UpdateTechnician?techId=${techData.TechId}&status=0`;
+            });
+            div.appendChild(button);
+            button1.style.gridColumn = "span 3";
+            button1.innerHTML = "<p>Resetuj hasło</p>";
+            button1.addEventListener("click", function () {
+                window.location.href = `/UsersManagement/ResetTechnicianPassword?techId=${techData.TechId}`;
+            });
+            div.appendChild(button1);
+            break;
+
+        case "Dezaktywowane":
+
+            button.style.gridColumn = "span 6";
+            button.innerHTML = "<p>Aktywuj konto</p>";
+            button.addEventListener("click", function () {
+                window.location.href = `/UsersManagement/UpdateTechnician?techId=${techData.TechId}&status=1`;
+            });
+            div.appendChild(button);
+
+            break;
+    }
 }

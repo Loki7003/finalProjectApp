@@ -1,5 +1,19 @@
 ﻿@{
+	if (Context.Session.GetString("User") == null)
+	{
+		Context.Response.Redirect("/Home/Index");
+	}
 	ViewData["Title"] = "Utwórz nowe konto technika";
+	var userJson = Context.Session.GetString("User");
+	var userRole = "";
+	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
+	{
+		userRole = doc.RootElement.GetProperty("UserRole").GetString();
+	}
+	if (userRole != "Administrator Systemu" && userRole != "Administrator użytkowników" && userRole != "Nadzorca techniczny")
+	{
+		Context.Response.Redirect("/Home/NotAuthorized");
+	}
 }
 @model UserModel
 <div class="upperpanel">
@@ -12,8 +26,46 @@
 		</div>
 	</a>
 </div>
-<a asp-area="" asp-controller="User" asp-action="UserMenu" class="returnButton">
-	<div class="returnMenu">
-		<h4>Powrót do menu</h4>
-	</div>
-</a>
+
+<div class="text-center">
+	@Html.BeginForm("AddTechnician", "UsersManagement", FormMethod.Post, new { id = "addTechForm" })
+	<fieldset class="createForm">
+		<label name="techFirstName" id="techFirstName" for="techFirstName">Imię technika:</label>
+		<input type="text" name="techFirstName" id="techFirstName" maxlength="30" required />
+		<label name="techLastName" id="techLastName" for="techLastName">Nazwisko technika:</label>
+		<input type="text" name="techLastName" id="techLastName" maxlength="50" required />
+		<label name="techSpecs" id="techSpecs" for="techSpecs">Specjalizacje technika:</label>
+		<div class="techSpecs">
+			<input type="checkbox" id="techSpec1" name="techSpecs" value="1" />
+			<label for="techSpec1">Hydraulik</label>
+		</div>
+		<div class="techSpecs">
+			<input type="checkbox" id="techSpec2" name="techSpecs" value="2" />
+			<label for="techSpec2">Elektryk</label>
+		</div>
+		<div class="techSpecs">
+			<input type="checkbox" id="techSpec3" name="techSpecs" value="3" />
+			<label for="techSpec3">Gazownik</label>
+		</div>
+		<div class="techSpecs">
+			<input type="checkbox" id="techSpec4" name="techSpecs" value="4" />
+			<label for="techSpec4">Budowlaniec</label>
+		</div>
+		<div class="techSpecs">
+			<input type="checkbox" id="techSpec5" name="techSpecs" value="5" />
+			<label for="techSpec5">Serwisant AGD</label>
+		</div>
+		<div class="techSpecs">
+			<input type="checkbox" id="techSpec6" name="techSpecs" value="6" />
+			<label for="techSpec6">Informatyk</label>
+		</div>
+	</fieldset>
+	<input type="submit" value="Utwórz konto technika" name="addTechnician" id="addTechnician" />
+</div>
+<div class="returnButton">
+	<a asp-area="" asp-controller="User" asp-action="UserMenu">
+		<div class="returnMenu">
+			<h4>Powrót do menu</h4>
+		</div>
+	</a>
+</div>
