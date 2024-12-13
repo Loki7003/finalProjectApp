@@ -61,6 +61,12 @@ namespace finalProjectApp.Controllers
 		public ActionResult UserMenu()
 		{
 			var userJson = HttpContext.Session.Get("User");
+
+			if (userJson == null)
+			{
+				return RedirectToAction("Index", "Home");
+			}
+
 			var user = JsonSerializer.Deserialize<UserModel>(userJson);
 
 			if (!user.PasswordExpired)

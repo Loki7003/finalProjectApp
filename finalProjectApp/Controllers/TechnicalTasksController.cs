@@ -47,7 +47,7 @@ namespace finalProjectApp.Controllers
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand selectTasks = new SqlCommand("SELECT [TaskId] ,[TaskSubject] ,[TaskDetails] ,[TaskRequestor] ,[TaskRequestorName] ,[TaskCreated] ,[TaskClosed] ,[TechnicianName] ,[TaskTechnician] ,[TaskCategory] ,[CategoryName] ,[TaskStatus] ,[StatusName] FROM [finalProjectDB].[dbo].[vw_TaskDisplay] WHERE TaskRequestor = @userId ORDER BY TaskCreated DESC, TaskStatus ASC, TaskId DESC", connection);
+			SqlCommand selectTasks = new SqlCommand("SELECT [TaskId] ,[TaskSubject] ,[TaskDetails] ,[TaskRequestor] ,[TaskRequestorName] ,[TaskCreated] ,[TaskClosed] ,[TechnicianName] ,[TaskTechnician] ,[TaskCategory] ,[CategoryName] ,[TaskStatus] ,[StatusName] FROM [finalProjectDB].[dbo].[vw_TaskDisplay] WHERE TaskRequestor = @userId ORDER BY TaskStatus ASC, TaskCreated DESC, TaskId DESC", connection);
 			selectTasks.Parameters.AddWithValue("@userId", user.Id);
 			SqlDataReader reader = selectTasks.ExecuteReader();
 			while (reader.Read())
@@ -91,7 +91,7 @@ namespace finalProjectApp.Controllers
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand selectTasks = new SqlCommand("SELECT [TaskId] ,[TaskSubject] ,[TaskDetails] ,[TaskRequestor] ,[TaskRequestorName] ,[TaskCreated] ,[TaskClosed] ,[TechnicianName] ,[TaskTechnician] ,[TaskCategory] ,[CategoryName] ,[TaskStatus] ,[StatusName] FROM [finalProjectDB].[dbo].[vw_TaskDisplay] WHERE TaskStatus BETWEEN 1 AND 4 ORDER BY TaskCreated DESC, TaskStatus ASC, TaskId DESC", connection);
+			SqlCommand selectTasks = new SqlCommand("SELECT [TaskId] ,[TaskSubject] ,[TaskDetails] ,[TaskRequestor] ,[TaskRequestorName] ,[TaskCreated] ,[TaskClosed] ,[TechnicianName] ,[TaskTechnician] ,[TaskCategory] ,[CategoryName] ,[TaskStatus] ,[StatusName] FROM [finalProjectDB].[dbo].[vw_TaskDisplay] WHERE TaskStatus BETWEEN 1 AND 4 ORDER BY TaskStatus ASC, TaskCreated DESC, TaskId DESC", connection);
 			SqlDataReader reader = selectTasks.ExecuteReader();
 			while (reader.Read())
 			{
@@ -134,7 +134,7 @@ namespace finalProjectApp.Controllers
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand selectTasks = new SqlCommand("SELECT [TaskId] ,[TaskSubject] ,[TaskDetails] ,[TaskRequestor] ,[TaskRequestorName] ,[TaskCreated] ,[TaskClosed] ,[TechnicianName] ,[TaskTechnician] ,[TaskCategory] ,[CategoryName] ,[TaskStatus] ,[StatusName] FROM [finalProjectDB].[dbo].[vw_TaskDisplay] WHERE TaskStatus = 5 ORDER BY TaskCreated DESC, TaskStatus ASC, TaskId DESC", connection);
+			SqlCommand selectTasks = new SqlCommand("SELECT [TaskId] ,[TaskSubject] ,[TaskDetails] ,[TaskRequestor] ,[TaskRequestorName] ,[TaskCreated] ,[TaskClosed] ,[TechnicianName] ,[TaskTechnician] ,[TaskCategory] ,[CategoryName] ,[TaskStatus] ,[StatusName] FROM [finalProjectDB].[dbo].[vw_TaskDisplay] WHERE TaskStatus = 5 ORDER BY TaskStatus ASC, TaskCreated DESC, TaskId DESC", connection);
 			SqlDataReader reader = selectTasks.ExecuteReader();
 			while (reader.Read())
 			{

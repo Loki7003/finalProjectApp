@@ -1,7 +1,24 @@
 ﻿@{
 	ViewData["Title"] = "Utwórz nowego użytkownika";
+	if (Context.Session.GetString("User") == null)
+	{
+		Context.Response.Redirect("/Home/Index");
+	}
+	var userJson = Context.Session.GetString("User");
+	var userRole = "";
+	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
+	{
+		userRole = doc.RootElement.GetProperty("UserRole").GetString();
+	}
+	if (userRole != "Administrator Systemu" && userRole != "Administrator użytkowników")
+	{
+		Context.Response.Redirect("/Home/NotAuthorized");
+	}
+	
 }
 @model UserModel
+
+<div class="userData" data-user="@userJson"></div>
 <div class="upperpanel">
 	<div class="sitename">
 		<h2>Utwórz nowego użytkownika</h2>
@@ -11,6 +28,25 @@
 			Wyloguj
 		</div>
 	</a>
+</div>
+<div class="text-center">
+	@Html.BeginForm("AddUser", "UsersManagement", FormMethod.Post, new { id = "addUserForm" })
+	<fieldset class="createForm">
+		<label name="userFirstName" id="userFirstName" for="userFirstName">Imię użytkownika:</label>
+		<input type="text" name="userFirstName" id="userFirstName" maxlength="30" required />
+		<label name="userLastName" id="userLastName" for="userLastName">Nazwisko użytkownika:</label>
+		<input type="text" name="userLastName" id="userLastName" maxlength="50" required />
+		<label name="userRole" id="userRole" for="userRole">Rola użytkownika:</label>
+		<select id="userRole" name="userRole" required>
+			<option value="" disabled selected>Wybierz rolę użytkownika</option>
+			<option value="1">Administrator Systemu</option>
+			<option value="2">Lokator</option>
+			<option value="3">Zarządca osiedla</option>
+			<option value="4">Nadzorca techniczny</option>
+			<option value="5">Administrator użytkowników</option>
+		</select>
+	</fieldset>
+	<input type="submit" value="Utwórz konto użytkownika" name="addUser" id="addUser" />
 </div>
 <div class="returnButton">
 	<a asp-area="" asp-controller="User" asp-action="UserMenu">

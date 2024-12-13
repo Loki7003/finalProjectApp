@@ -1,6 +1,20 @@
 ﻿@{
+	if (Context.Session.GetString("User") == null)
+	{
+		Context.Response.Redirect("/Home/Index");
+	}
 	ViewData["Title"] = "Wyświetl twoje zgłoszenia techniczne";
 	var tasksJson = ViewData["TasksJson"] as string;
+	var userJson = Context.Session.GetString("User");
+	var userRole = "";
+	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
+	{
+		userRole = doc.RootElement.GetProperty("UserRole").GetString();
+	}
+	if (userRole == "Administrator użytkowników" || userRole == "Administrator Systemu")
+	{
+		Context.Response.Redirect("/Home/NotAuthorized");
+	}
 }
 @model UserModel
 

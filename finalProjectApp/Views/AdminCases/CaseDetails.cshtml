@@ -1,8 +1,21 @@
 ﻿@{
+	if (Context.Session.GetString("User") == null)
+	{
+		Context.Response.Redirect("/Home/Index");
+	}
 	var caseId = ViewData["CaseId"];
 	var caseJson = ViewData["CaseJson"] as string;
 	ViewData["Title"] = "Szczegóły sprawy " + caseId;
 	var userJson = Context.Session.GetString("User");
+	var userRole = "";
+	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
+	{
+		userRole = doc.RootElement.GetProperty("UserRole").GetString();
+	}
+	if (userRole == "Administrator użytkowników" || userRole == "Nadzorca techniczny")
+	{
+		Context.Response.Redirect("/Home/NotAuthorized");
+	}
 }
 @model UserModel
 

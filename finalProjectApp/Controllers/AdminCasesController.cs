@@ -47,7 +47,7 @@ namespace finalProjectApp.Controllers
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseRequestor = @userId ORDER BY CaseCreated DESC, CaseStatus ASC, CaseId DESC", connection);
+			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseRequestor = @userId ORDER BY CaseStatus ASC, CaseCreated DESC, CaseId DESC", connection);
 			selectCases.Parameters.AddWithValue("@userId", user.Id);
 			SqlDataReader reader = selectCases.ExecuteReader();
 			while (reader.Read())
@@ -91,7 +91,7 @@ namespace finalProjectApp.Controllers
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseStatus BETWEEN 1 AND 3 ORDER BY CaseCreated DESC, CaseStatus ASC, CaseId DESC", connection);
+			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseStatus BETWEEN 1 AND 3 ORDER BY CaseStatus ASC, CaseCreated DESC, CaseId DESC", connection);
 			selectCases.Parameters.AddWithValue("@userId", user.Id);
 			SqlDataReader reader = selectCases.ExecuteReader();
 			while (reader.Read())
@@ -135,7 +135,7 @@ namespace finalProjectApp.Controllers
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseStatus BETWEEN 4 AND 5 ORDER BY CaseCreated DESC, CaseId DESC", connection);
+			SqlCommand selectCases = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseStatus BETWEEN 4 AND 5 ORDER BY CaseStatus ASC, CaseCreated DESC, CaseId DESC", connection);
 			selectCases.Parameters.AddWithValue("@userId", user.Id);
 			SqlDataReader reader = selectCases.ExecuteReader();
 			while (reader.Read())

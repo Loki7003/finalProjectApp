@@ -1,5 +1,19 @@
 ﻿@{
+	if (Context.Session.GetString("User") == null)
+	{
+		Context.Response.Redirect("/Home/Index");
+	}
 	ViewData["Title"] = "Zarządzaj użytkownikami";
+	var userJson = Context.Session.GetString("User");
+	var userRole = "";
+	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
+	{
+		userRole = doc.RootElement.GetProperty("UserRole").GetString();
+	}
+	if (userRole != "Administrator Systemu" && userRole != "Administrator użytkowników")
+	{
+		Context.Response.Redirect("/Home/NotAuthorized");
+	}
 }
 @model UserModel
 <div class="upperpanel">

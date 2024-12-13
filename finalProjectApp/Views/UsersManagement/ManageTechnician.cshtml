@@ -1,7 +1,25 @@
 ﻿@{
+	if (Context.Session.GetString("User") == null)
+	{
+		Context.Response.Redirect("/Home/Index");
+	}
 	ViewData["Title"] = "Zarządzaj technikami";
+
+	var techsJson = ViewData["TechsJson"] as string;
+	var userJson = Context.Session.GetString("User");
+	var userRole = "";
+	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
+	{
+		userRole = doc.RootElement.GetProperty("UserRole").GetString();
+	}
+	if (userRole != "Administrator Systemu" && userRole != "Administrator użytkowników" && userRole != "Nadzorca techniczny")
+	{
+		Context.Response.Redirect("/Home/NotAuthorized");
+	}
 }
 @model UserModel
+
+<div class="techsData" data-techs="@techsJson" id="manageTechnician"></div>
 <div class="upperpanel">
 	<div class="sitename">
 		<h2>Zarządzaj technikami</h2>
@@ -11,6 +29,19 @@
 			Wyloguj
 		</div>
 	</a>
+</div>
+
+<div class="text-center dataTableDiv" id="manageTechnicianDiv">
+	<table id="manageTechnicianTable" class="techsTable dataTable">
+		<thead>
+			<tr>
+				<th>ID technika</th>
+				<th>Login</th>
+				<th>Imię</th>
+				<th>Nazwisko</th>
+			</tr>
+		</thead>
+	</table>
 </div>
 <div class="returnButton">
 	<a asp-area="" asp-controller="User" asp-action="UserMenu">

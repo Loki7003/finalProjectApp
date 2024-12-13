@@ -47,6 +47,22 @@ app.Use(async (context, next) =>
 	}
 });
 
+app.UseStatusCodePages(async context =>
+{
+
+	var response = context.HttpContext.Response;
+
+	if (response.StatusCode == 404)
+	{
+		response.Redirect("/Home/NotFound");
+	} else if (response.StatusCode == 401)
+	{
+		response.Redirect("/Home/NotAuthorized");
+	}
+
+
+});
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
