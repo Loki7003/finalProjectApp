@@ -14,6 +14,7 @@ namespace finalProjectMobileApp
 		public string Lastname { get; set; }
 		public bool Enabled { get; set; }
 		public bool PasswordExpired { get; set; }
-		public DateTime PassworedChangedOn { get; set; }
+		public DateTime PasswordChangedOn { get; set; }
+		public int[] Specializations { get; set; }
 	}
 }

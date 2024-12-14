@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             HideSoftInputOnTapped="True"
              x:Class="finalProjectMobileApp.HomePage"
              Title="HomePage"
              Shell.NavBarIsVisible="False">
@@ -9,6 +10,43 @@
             x:Name="welcomeLabel"
             Text=""
             VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+            HorizontalOptions="Center"
+            Margin="20"/>
+        <Button
+            x:Name="displayUnassignedTasks"
+            Text="Wyświetl dostępne zgłoszenia"
+            Margin="20,10,20,0"
+            FontSize="30"
+            HeightRequest="150"
+            LineBreakMode="WordWrap"
+            Clicked="displayUnassignedTasks_Clicked"
+            />
+        <Button
+            x:Name="displayMyTasks"
+            Text="Wyświetl moje zgłoszenia"
+            Margin="20,30,20,0"
+            FontSize="30"
+            HeightRequest="150"
+            LineBreakMode="WordWrap"
+            Clicked="displayMyTasks_Clicked"
+             />
+        <Button
+            x:Name="resetPassword"
+            Text="Zmień hasło"
+            Margin="20,30,20,0"
+            FontSize="30"
+            HeightRequest="150"
+            LineBreakMode="WordWrap"
+            Clicked="changePassword_Clicked"
+            />
+        <Button
+            x:Name="logout"
+            Text="Wyloguj się"
+            Margin="20,30,20,0"
+            FontSize="30"
+            HeightRequest="150"
+            LineBreakMode="WordWrap"
+            Clicked="logout_Clicked"
+            />
     </VerticalStackLayout>
 </ContentPage>

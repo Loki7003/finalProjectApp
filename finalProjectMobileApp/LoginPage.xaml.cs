@@ -16,6 +16,9 @@ namespace finalProjectMobileApp
         public void LoginButton_Clicked(object sender, EventArgs e)
         {
 
+			UsernameEntry.Unfocus();
+			PasswordEntry.Unfocus();
+
 			string username = UsernameEntry.Text;
 			string userpassword = PasswordEntry.Text;
 
@@ -42,7 +45,6 @@ namespace finalProjectMobileApp
 			{
 				login.Id = (Int32)authenticate.Parameters["@TechnicianId"].Value;
 				HomePage homePage = new HomePage(login.Id);
-				Navigation.PopAsync();
 				Navigation.PushAsync(homePage);
 			}
 
