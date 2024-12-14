@@ -10,25 +10,25 @@
             Spacing="25">
 
             <Label
-                Text="Technical Portal"
+                Text="Portal Techniczny"
                 Style="{StaticResource Headline}"
                 SemanticProperties.HeadingLevel="Level1" />
 
             <StackLayout>
 
-                <Label Text="Login:" FontSize="Medium" HorizontalTextAlignment="Center"/>
-                <Frame BackgroundColor="LightGray" CornerRadius="5" BorderColor="Black" Padding="0" >
+                <Label Text="Login:" FontSize="Medium" HorizontalTextAlignment="Center"  Margin="10,0"/>
+                <Frame BackgroundColor="LightGray" CornerRadius="5" BorderColor="Black" Padding="0"  Margin="10,0" >
                     <Entry x:Name="UsernameEntry" />
                 </Frame>
 
-                <Label Text="Password:" FontSize="Medium" HorizontalTextAlignment="Center"/>
-                <Frame BackgroundColor="LightGray" CornerRadius="5" BorderColor="Black" Padding="0" >
+                <Label Text="Hasło:" FontSize="Medium" HorizontalTextAlignment="Center"  Margin="10,0"/>
+                <Frame BackgroundColor="LightGray" CornerRadius="5" BorderColor="Black" Padding="0"  Margin="10,0">
                     <Entry IsPassword="True" x:Name="PasswordEntry" />
                 </Frame>
 
                 <Button
                 x:Name="loginButton"
-                Text="Login" 
+                Text="Zaloguj się" 
                 Clicked="LoginButton_Clicked"
                 HorizontalOptions="Fill" 
                 Margin="20"/>
