@@ -4,6 +4,8 @@
 	{
 		Context.Response.Redirect("/Home/Index");
 	}
+
+	var premisesJson = ViewData["PremisesJson"] as string;
 	var userJson = Context.Session.GetString("User");
 	var userRole = "";
 	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
@@ -19,6 +21,7 @@
 @model UserModel
 
 <div class="userData" data-user="@userJson"></div>
+<div class="premisesData" data-premises="@premisesJson"></div>
 <div class="upperpanel">
 	<div class="sitename">
 		<h2>Utwórz nowego użytkownika</h2>
@@ -32,10 +35,12 @@
 <div class="text-center">
 	@Html.BeginForm("AddUser", "UsersManagement", FormMethod.Post, new { id = "addUserForm" })
 	<fieldset class="createForm">
-		<label name="userFirstName" id="userFirstName" for="userFirstName">Imię użytkownika:</label>
+		<label name="userFirstName" for="userFirstName">Imię użytkownika:</label>
 		<input type="text" name="userFirstName" id="userFirstName" maxlength="30" required />
-		<label name="userLastName" id="userLastName" for="userLastName">Nazwisko użytkownika:</label>
+		<label name="userLastName" for="userLastName">Nazwisko użytkownika:</label>
 		<input type="text" name="userLastName" id="userLastName" maxlength="50" required />
+		<label name="userMailAddress" for="userMail">Adres E-Mail:</label>
+		<input type="text" name="userMail" id="userMail" maxlength="254" required />
 		<label name="userRole" id="userRole" for="userRole">Rola użytkownika:</label>
 		<select id="userRole" name="userRole" required>
 			<option value="" disabled selected>Wybierz rolę użytkownika</option>
@@ -44,6 +49,10 @@
 			<option value="3">Zarządca osiedla</option>
 			<option value="4">Nadzorca techniczny</option>
 			<option value="5">Administrator użytkowników</option>
+		</select>
+		<label name="userPremise" for="userPremise">Mieszkanie:</label>
+		<select name="userPremise" id="userPremise" disabled>
+			<option value="" disabled selected>Wybierz mieszkanie</option>
 		</select>
 	</fieldset>
 	<input type="submit" value="Utwórz konto użytkownika" name="addUser" id="addUser" />

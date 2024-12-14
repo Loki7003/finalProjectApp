@@ -10,6 +10,8 @@
 		public string? AssignedEmployee { get; set; }
 		public string CaseStatus { get; set; }
 		public DateTime? CaseClosed { get; set; }
-		public string? CaseResponse { get; set; }	
+		public string? CaseResponse { get; set; }
+		public int RequestorId { get; set; }
+		public string RequestorAddress { get; set; }
 	}
 }

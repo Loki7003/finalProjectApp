@@ -181,6 +181,33 @@ namespace finalProjectApp.Controllers
 			var userJson = HttpContext.Session.Get("User");
 			var user = JsonSerializer.Deserialize<UserModel>(userJson);
 
+			List<PremiseModel> premisesList = new List<PremiseModel>();
+
+			string premisesJson;
+
+			ConnectionClass connectionClass = new ConnectionClass();
+			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+			connection.Open();
+			SqlCommand selectPremises = new SqlCommand("SELECT [PremisId], [PremisStreet], [PremisStaircaseNumber], [PremisApartmentNumber], [PremisOwner] FROM [finalProjectDB].[dbo].[Premises] WHERE PremisOwner IS NULL", connection);
+			SqlDataReader reader = selectPremises.ExecuteReader();
+			while (reader.Read())
+			{
+
+				PremiseModel premise = new PremiseModel()
+				{
+					PremiseId = reader.GetInt32(0),
+					Street = reader.GetString(1),
+					Staircase = reader.GetString(2),
+					Apartment = reader.GetInt32(3)
+				};
+
+				premisesList.Add(premise);
+			}
+			reader.Close();
+
+			premisesJson = JsonSerializer.Serialize(premisesList, _options);
+			ViewData["PremisesJson"] = premisesJson;
+
 			return View(user);
 		}
 
@@ -194,6 +221,79 @@ namespace finalProjectApp.Controllers
 
 			var userJson = HttpContext.Session.Get("User");
 			var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
+			List<UserModel> usersList = new List<UserModel>();
+			string usersJson;
+
+			ConnectionClass connectionClass = new ConnectionClass();
+			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+			connection.Open();
+			SqlCommand selectUsers = new SqlCommand("SELECT [UserId], [FirstName], [LastName], [UserLogin], [RoleName] FROM [finalProjectDB].[dbo].[vw_SelectUser]", connection);
+			SqlDataReader reader = selectUsers.ExecuteReader();
+			while (reader.Read())
+			{
+
+				UserModel managedUser = new UserModel()
+				{
+					Id = reader.GetInt32(0),
+					Name = reader.GetString(1),
+					Lastname = reader.GetString(2),
+					Username = reader.GetString(3),
+					UserRole = reader.GetString(4)
+				};
+
+				usersList.Add(managedUser);
+
+			}
+			reader.Close();
+			connection.Close();
+
+			usersJson = JsonSerializer.Serialize(usersList, _options);
+			ViewData["UsersJson"] = usersJson;
+
+
+			return View(user);
+		}
+
+		public ActionResult UserDetails (int userId)
+		{
+			if (HttpContext.Session.Get("User") == null)
+			{
+				LoginModel login = new LoginModel();
+				return RedirectToAction("Index", "Home", login);
+			}
+
+			var userJson = HttpContext.Session.Get("User");
+			var user = JsonSerializer.Deserialize<UserModel>(userJson);
+
+			string checkedUserJson;
+
+			UserModel checkedUser = new UserModel();
+
+			ConnectionClass connectionClass = new ConnectionClass();
+			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+			connection.Open();
+			SqlCommand selectUser = new SqlCommand("SELECT [UserId], [FirstName], [LastName], [UserLogin], [RoleName], [UserEnabled], [PasswordChangedOn] FROM [finalProjectDB].[dbo].[vw_SelectUser]", connection);
+			SqlDataReader reader = selectUser.ExecuteReader();
+			if (reader.Read())
+			{
+
+				checkedUser.Id = reader.GetInt32(0);
+				checkedUser.Name = reader.GetString(1);
+				checkedUser.Lastname = reader.GetString(2);
+				checkedUser.Username = reader.GetString(3);
+				checkedUser.UserRole = reader.GetString(4);
+				checkedUser.Enabled = reader.GetBoolean(5);
+				checkedUser.PasswordChangedOn = reader.GetDateTime(6);
+				
+			}
+			reader.Close();
+			connection.Close();
+
+			checkedUserJson = JsonSerializer.Serialize(checkedUser, _options);
+			ViewData["CheckedUserJson"] = checkedUserJson;
+			ViewData["CheckedUserId"] = userId;
+
 
 			return View(user);
 		}
@@ -242,22 +342,36 @@ namespace finalProjectApp.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult AddUser(string userFirstName, string userLastName, int userRole, string userMail)
+		public IActionResult AddUser(string userFirstName, string userLastName, int userRole, string userMail, int? userPremise)
 		{
 
 			var userJson = HttpContext.Session.Get("User");
 			var user = JsonSerializer.Deserialize<UserModel>(userJson);
+			int createdUserId;
 
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand createTaskCommand = new SqlCommand("dbo.sp_AddUser", connection);
-			createTaskCommand.CommandType = CommandType.StoredProcedure;
-			createTaskCommand.Parameters.AddWithValue("@Firstname", userFirstName);
-			createTaskCommand.Parameters.AddWithValue("@Lastname", userLastName);
-			createTaskCommand.Parameters.AddWithValue("@MailAddress", userMail);
-			createTaskCommand.Parameters.AddWithValue("@Role", userRole);
-			createTaskCommand.ExecuteNonQuery();
+			SqlCommand addUserCommand = new SqlCommand("dbo.sp_AddProgramUser", connection);
+			addUserCommand.CommandType = CommandType.StoredProcedure;
+			addUserCommand.Parameters.AddWithValue("@Firstname", userFirstName);
+			addUserCommand.Parameters.AddWithValue("@Lastname", userLastName);
+			addUserCommand.Parameters.AddWithValue("@MailAddress", userMail);
+			addUserCommand.Parameters.AddWithValue("@Role", userRole);
+			addUserCommand.Parameters.Add("@ResponseValue", SqlDbType.Int);
+			addUserCommand.Parameters["@ResponseValue"].Direction = ParameterDirection.Output;
+			addUserCommand.ExecuteNonQuery();
+
+			if (userPremise != null)
+			{
+
+				createdUserId = (Int32)addUserCommand.Parameters["@ResponseValue"].Value;
+				SqlCommand updatePremise = new SqlCommand("UPDATE dbo.Premises SET PremisOwner = @UserId WHERE PremisId = @PremiseId",connection);
+				updatePremise.Parameters.AddWithValue("@UserId", createdUserId);
+				updatePremise.Parameters.AddWithValue("@PremiseId", userPremise);
+				updatePremise.ExecuteNonQuery();
+
+			}
 
 			connection.Close();
 
@@ -295,6 +409,40 @@ namespace finalProjectApp.Controllers
 			connection.Close();
 
 			return RedirectToAction("TechnicianDetails", "UsersManagement", new { techId = techId });
+
+		}
+
+		public IActionResult UpdateUser(int userId, int status)
+		{
+
+			ConnectionClass connectionClass = new ConnectionClass();
+			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+			connection.Open();
+			SqlCommand updateUserCommand = new SqlCommand("UPDATE UsersDetails SET UserEnabled = @Status WHERE UserId = @UserId", connection);
+			updateUserCommand.Parameters.AddWithValue("@UserId", userId);
+			updateUserCommand.Parameters.AddWithValue("@Status", status);
+			updateUserCommand.ExecuteNonQuery();
+
+			connection.Close();
+
+			return RedirectToAction("UserDetails", "UsersManagement", new { userId = userId });
+
+		}
+
+		public IActionResult ResetUserPassword(int userId)
+		{
+
+			ConnectionClass connectionClass = new ConnectionClass();
+			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
+			connection.Open();
+			SqlCommand resetUserPasswordCommand = new SqlCommand("sp_ResetUserPassword", connection);
+			resetUserPasswordCommand.CommandType = CommandType.StoredProcedure;
+			resetUserPasswordCommand.Parameters.AddWithValue("@UserId", userId);
+			resetUserPasswordCommand.ExecuteNonQuery();
+
+			connection.Close();
+
+			return RedirectToAction("TechnicianDetails", "UsersManagement", new { userId = userId });
 
 		}
 	}

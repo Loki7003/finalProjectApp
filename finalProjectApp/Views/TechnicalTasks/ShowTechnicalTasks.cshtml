@@ -11,7 +11,7 @@
 	{
 		userRole = doc.RootElement.GetProperty("UserRole").GetString();
 	}
-	if (userRole == "Administrator użytkowników" || userRole == "Administrator Systemu")
+	if (userRole != "Lokator")
 	{
 		Context.Response.Redirect("/Home/NotAuthorized");
 	}

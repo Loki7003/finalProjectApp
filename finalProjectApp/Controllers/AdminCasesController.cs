@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Reflection.Metadata;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace finalProjectApp.Controllers
 {
@@ -173,39 +174,46 @@ namespace finalProjectApp.Controllers
 			var userJson = HttpContext.Session.Get("User");
 			var user = JsonSerializer.Deserialize<UserModel>(userJson);
 			string caseJson;
+			AdministrativeCaseModel admin = new AdministrativeCaseModel();
 
 			ConnectionClass connectionClass = new ConnectionClass();
 			SqlConnection connection = new SqlConnection(connectionClass.ConnectionString);
 			connection.Open();
-			SqlCommand selectCase = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseId = @caseId", connection);
+			SqlCommand selectCase = new SqlCommand("SELECT [CaseId], [CaseSubject], [CaseDetails], [CaseCreated], [CaseRequestorName], [AssignedEmployee], [CaseResponse], [CaseClosed], [StatusName], [CaseRequestor] FROM [finalProjectDB].[dbo].[vw_AdminstrativeCaseDisplay] WHERE CaseId = @caseId", connection);
 			selectCase.Parameters.AddWithValue("@caseId", caseId);
 			SqlDataReader reader = selectCase.ExecuteReader();
 			if (reader.Read())
 			{
-				AdministrativeCaseModel admin = new AdministrativeCaseModel()
-				{
-					CaseId = reader.GetInt32(0),
-					CaseSubject = reader.IsDBNull(1) ? null : reader.GetString(1),
-					CaseDetails = reader.IsDBNull(2) ? null : reader.GetString(2),
-					CaseCreated = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
-					CaseRequestor = reader.IsDBNull(4) ? null : reader.GetString(4),
-					AssignedEmployee = reader.IsDBNull(5) ? null : reader.GetString(5),
-					CaseResponse = reader.IsDBNull(6) ? null : reader.GetString(6),
-					CaseClosed = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7),
-					CaseStatus = reader.IsDBNull(8) ? null : reader.GetString(8)
-				};
 
-				caseJson = JsonSerializer.Serialize(admin, _options);
-
-				ViewData["CaseId"] = caseId;
-				ViewData["CaseJson"] = caseJson;
-
-				return View(user);
+				admin.CaseId = reader.GetInt32(0);
+				admin.CaseSubject = reader.IsDBNull(1) ? null : reader.GetString(1);
+				admin.CaseDetails = reader.IsDBNull(2) ? null : reader.GetString(2);
+				admin.CaseCreated = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3);
+				admin.CaseRequestor = reader.IsDBNull(4) ? null : reader.GetString(4);
+				admin.AssignedEmployee = reader.IsDBNull(5) ? null : reader.GetString(5);
+				admin.CaseResponse = reader.IsDBNull(6) ? null : reader.GetString(6);
+				admin.CaseClosed = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7);
+				admin.CaseStatus = reader.IsDBNull(8) ? null : reader.GetString(8);
+				admin.RequestorId = reader.GetInt32(9);
+				
 			}
-			else
+			reader.Close();
+			SqlCommand selectPremise = new SqlCommand("SELECT PremisStreet, PremisStaircaseNumber, PremisApartmentNumber FROM dbo.vw_PremiseDisplay WHERE PremisOwner = @Requestor", connection);
+			selectPremise.Parameters.AddWithValue("@Requestor", admin.RequestorId);
+			SqlDataReader reader1 = selectPremise.ExecuteReader();
+			if (reader1.Read())
 			{
-				return RedirectToAction("ShowAdministrativeCases", "AdminCases");
+				admin.RequestorAddress = reader1.GetString(0) + " " + reader1.GetString(1) + "/" + reader1.GetInt32(2).ToString();
 			}
+			reader1.Close();
+			connection.Close();
+
+			caseJson = JsonSerializer.Serialize(admin, _options);
+
+			ViewData["CaseId"] = caseId;
+			ViewData["CaseJson"] = caseJson;
+
+			return View(user);
 			
 		}
 

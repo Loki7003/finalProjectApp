@@ -11,7 +11,7 @@
 		public bool Enabled { get; set; }
 		public bool PasswordExpired { get; set; }
 		public DateTime CreatedOn { get; set; }
-		public DateTime PassworedChangedOn { get; set; }
+		public DateTime PasswordChangedOn { get; set; }
 		public DateTime UserDisabledOn { get; set; }
 	}
 }

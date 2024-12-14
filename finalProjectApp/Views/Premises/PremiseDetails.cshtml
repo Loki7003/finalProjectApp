@@ -3,11 +3,10 @@
 	{
 		Context.Response.Redirect("/Home/Index");
 	}
-	var checkedUserId = ViewData["CheckedUserId"];
+	var premiseId = ViewData["PremiseId"];
 
-	ViewData["Title"] = "Użytkownik #" + checkedUserId;
+	ViewData["Title"] = "Lokal #" + premiseId;
 
-	var checkedUserJson = ViewData["CheckedUserJson"] as string;
 	var premiseJson = ViewData["PremiseJson"] as string;
 	var userJson = Context.Session.GetString("User");
 	var userRole = "";
@@ -15,18 +14,17 @@
 	{
 		userRole = doc.RootElement.GetProperty("UserRole").GetString();
 	}
-	if (userRole != "Administrator Systemu" && userRole != "Administrator użytkowników")
+	if (userRole != "Administrator Systemu" && userRole != "Zarządca osiedla")
 	{
 		Context.Response.Redirect("/Home/NotAuthorized");
 	}
 }
 @model UserModel
 
-<div class="usersData" data-checked="@checkedUserJson" id="userDetails"></div>
-<div class="premisesData" data-premise="@premiseJson"></div>
+<div class="premisesData" data-premise="@premiseJson" id="premiseDetails"></div>
 <div class="upperpanel">
 	<div class="sitename">
-		<h2>Szczegóły użytkownika #@checkedUserId</h2>
+		<h2>Szczegóły lokalu #@premiseId</h2>
 	</div>
 	<a href="@Url.Action("Logout","User")">
 		<div class="function">
@@ -34,7 +32,7 @@
 		</div>
 	</a>
 </div>
-<div class="text-center" id="userDetailsDiv">
+<div class="text-center" id="premiseDetailsDiv">
 </div>
 <div class="returnButton">
 	<a asp-area="" asp-controller="User" asp-action="UserMenu">
