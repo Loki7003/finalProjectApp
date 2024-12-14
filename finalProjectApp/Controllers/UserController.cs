@@ -34,7 +34,7 @@ namespace finalProjectApp.Controllers
 					user.Email = (String)reader[4];
 					user.UserRole = (String)reader[5];
 					user.PasswordExpired = (Boolean)reader[6];
-					user.PassworedChangedOn = (DateTime)reader[7];
+					user.PasswordChangedOn = (DateTime)reader[7];
 					user.Enabled = (Boolean)reader[8];
 				}
 				reader.Close();
@@ -139,7 +139,7 @@ namespace finalProjectApp.Controllers
 					user.PasswordExpired = false;
                     var userJson1 = JsonSerializer.Serialize(user,_options);
                     HttpContext.Session.SetString("User", userJson1);
-                    return RedirectToAction("ChangeUserPassword", "User", changePassword);
+                    return RedirectToAction("UserMenu", "User");
                 }
             }
         }

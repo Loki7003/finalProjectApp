@@ -1,0 +1,45 @@
+﻿@{
+	ViewData["Title"] = "Utwórz lokal";
+	var userJson = Context.Session.GetString("User");
+	var userRole = "";
+	using (var doc = System.Text.Json.JsonDocument.Parse(userJson))
+	{
+		userRole = doc.RootElement.GetProperty("UserRole").GetString();
+	}
+	if (userRole != "Administrator Systemu" && userRole != "Zarządca osiedla")
+	{
+		Context.Response.Redirect("/Home/NotAuthorized");
+	}
+	var usersListJson = ViewData["UsersList"];
+}
+@model UserModel
+
+<div class="upperpanel">
+	<div class="sitename">
+		<h2>Utwórz zgłoszenie techniczne</h2>
+	</div>
+	<a href="@Url.Action("Logout","User")">
+		<div class="function">
+			Wyloguj
+		</div>
+	</a>
+</div>
+<div class="text-center">
+	@Html.BeginForm("AddPremise", "Premises", FormMethod.Post)
+	<fieldset class="createForm">
+		<label name="street" for="street">Ulica:</label>
+		<input type="text" name="street" id="street" required />
+		<label name="staircase" for="staircase">Numer klatki schodowej:</label>
+		<input type="text" name="staircase" id="staircase" required />
+		<label name="apartment" for="apartment">Numer mieszkania:</label>
+		<input type="number" name="apartment" id="apartment" required />
+	</fieldset>
+	<input type="submit" value="Utwórz lokal" name="addTask" id="addTask" />
+</div>
+<div class="returnButton">
+	<a asp-area="" asp-controller="User" asp-action="UserMenu">
+		<div class="returnMenu">
+			<h4>Powrót do menu</h4>
+		</div>
+	</a>
+</div>

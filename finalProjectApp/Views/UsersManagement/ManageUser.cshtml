@@ -14,8 +14,12 @@
 	{
 		Context.Response.Redirect("/Home/NotAuthorized");
 	}
+	var usersJson = ViewData["UsersJson"];
 }
 @model UserModel
+
+<div class="usersData" data-users="@usersJson" id="manageUser"></div>
+<div class="userData" data-user="@userJson"></div>
 <div class="upperpanel">
 	<div class="sitename">
 		<h2>Zarządzaj użytkownikami</h2>
@@ -25,6 +29,19 @@
 			Wyloguj
 		</div>
 	</a>
+</div>
+
+<div class="text-center dataTableDiv" id="manageUserDiv">
+	<table id="manageUserTable" class="usersTable dataTable">
+		<thead>
+			<tr>
+				<th>ID użytkownika</th>
+				<th>Login</th>
+				<th>Imię</th>
+				<th>Nazwisko</th>
+			</tr>
+		</thead>
+	</table>
 </div>
 <div class="returnButton">
 	<a asp-area="" asp-controller="User" asp-action="UserMenu">
